@@ -1,10 +1,8 @@
 ---
 import '../../src/styles/globals.css';
 import '@fontsource-variable/inter/wght.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import ComingSoon from '../components/ComingSoon.astro';
-import MeetTheTeam from '../components/MeetTheTeam.astro';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
 
 interface Props {
     title: string;
@@ -71,13 +69,13 @@ const { title } = Astro.props;
         <meta name="generator" content={Astro.generator} />
         <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
     </head>
+
     <body class="antialiased text-white">
         <div class="relative min-h-[100svh] w-full bg-cover bg-center bg-blend-hard-light">
-            <ComingSoon />
-            <div class="px-4 relative z-10">
-                <!-- <h2 class="font-decorative pt-0 pb-8 text-center text-[#e8cf7c] text-4xl">We're #SocialButterflies</h2> -->
-                <MeetTheTeam />
-            </div>
+            <Header />
+
+            <slot />
+
             <Footer />
         </div>
     </body>

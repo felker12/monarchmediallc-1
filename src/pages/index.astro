@@ -1,11 +1,14 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '@layouts/Layout.astro';
+import ComingSoon from '@components/ComingSoon.astro';
+import MeetTheTeam from '@components/MeetTheTeam.astro';
 ---
 
 <Layout title="Monarch Media LLC | Coming Soon!">
-    <!-- <div class="absolute w-full">
-        <div class="z-10 w-full">
-            <h2 class="">Look forward to these services</h2>
-        </div>
-    </div> -->
+    <ComingSoon />
+
+    <div class="px-4 relative z-10">
+        <!-- <h2 class="font-decorative pt-0 pb-8 text-center text-[#e8cf7c] text-4xl">We're #SocialButterflies</h2> -->
+        <MeetTheTeam />
+    </div>
 </Layout>

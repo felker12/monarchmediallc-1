@@ -1,9 +1,24 @@
 {
     "extends": "astro/tsconfigs/base",
-    "include": [".astro/types.d.ts", "**/*"],
-    "exclude": ["dist"],
     "compilerOptions": {
-        "jsx": "react-jsx",
-        "jsxImportSource": "react"
+        "ignoreDeprecations": "6.0", //Ignore deprecation warnings for Astro 6.0
+        "baseUrl": "src",
+        "paths": {
+            "@components/*": [
+                "components/*"
+            ],
+            "@layouts/*": [
+                "layouts/*"
+            ],
+            "@assets/*": [
+                "assets/*"
+            ],
+            "@pages/*": [
+                "pages/*"
+            ],
+            "@data/*": [
+                "data/*"
+            ]
+        }
     }
 }
