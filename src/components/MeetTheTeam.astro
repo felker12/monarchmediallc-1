@@ -13,7 +13,7 @@ const TeamMembers: TeamMember[] = [
     },
     {
         name: 'Anthony Felker',
-        title: 'Marketing Manager, Web Developer',
+        title: 'Web Developer',
         image: '/images/Anthony.jpg'
     }
 ];
@@ -23,7 +23,7 @@ const TeamMembers: TeamMember[] = [
     <div class="flex flex-wrap justify-center gap-6">
         {
             TeamMembers.map((member) => (
-                <div class="relative max-w-sm w-full bg-[#121214] text-white rounded-2xl shadow-xl p-6 border border-white/5 hover:border-[#451a6b]/50 hover:shadow-2xl transition-all duration-300 group flex flex-col justify-between">
+                <div class="relative max-w-2xs w-full bg-[#121214] text-white rounded-2xl shadow-xl p-6 border border-white/5 hover:border-[#451a6b]/50 hover:shadow-2xl transition-all duration-300 group flex flex-col justify-between">
                     <div class="flex flex-col items-center space-y-4">
                         <img
                             src={member.image}
