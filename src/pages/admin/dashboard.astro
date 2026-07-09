@@ -1,0 +1,101 @@
+---
+import Layout from '@layouts/Layout.astro';
+// src/pages/admin/dashboard.astro
+export const prerender = false;
+
+// Authenticate session check
+if (!Astro.cookies.has('admin_token')) {
+    return Astro.redirect('/admin/login');
+}
+---
+
+<Layout title="Admin Dashboard">
+    <section class="max-w-5xl mx-auto px-4 py-12 text-white">
+        <div class="mb-10 space-y-2">
+            <h1 class="font-header text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                System Control Panel
+            </h1>
+            <p class="font-body text-sm text-gray-400 font-medium">Welcome back. Select an administrative node below to manage live platform datasets.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a
+                href="/admin/projects"
+                class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-cyan-500/30 hover:bg-white/[0.01] transition-all duration-300"
+            >
+                <div class="flex items-start justify-between">
+                    <div class="space-y-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <h2 class="font-body font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">Project Portfolio</h2>
+                            <p class="font-body text-xs text-gray-400 leading-relaxed">
+                                Create, refine, or drop active project entries synced directly to your Azure SQLite database pipeline.
+                            </p>
+                        </div>
+                    </div>
+                    <span class="text-gray-600 group-hover:text-cyan-400 transition-colors pt-1">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
+            <a
+                href="/admin/team"
+                class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-purple-500/40 hover:bg-white/[0.01] transition-all duration-300"
+            >
+                <div class="flex items-start justify-between">
+                    <div class="space-y-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-2.533-4.65l-2.21-.77a4.902 4.902 0 00-2.427 0l-2.21.77a4.124 4.124 0 00-2.533 4.65 9.338 9.338 0 004.122.952zM15 4.5a3 3 0 110 6 3 3 0 010-6zM3.651 19.02a11.956 11.956 0 014.244-.803l1.1-.38a4.903 4.903 0 011.02-.275 4.903 4.903 0 01-1.02-.275l-1.1-.38a11.956 11.956 0 01-4.244-.803A4.119 4.119 0 001.125 15V18a1.125 1.125 0 001.125 1.125h1.401zM11.25 7.5a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <h2 class="font-body font-bold text-lg text-white group-hover:text-purple-400 transition-colors">Team Roster</h2>
+                            <p class="font-body text-xs text-gray-400 leading-relaxed">
+                                Organize company profile positions, modify details, or display new operator cards across public landing assets.
+                            </p>
+                        </div>
+                    </div>
+                    <span class="text-gray-600 group-hover:text-purple-400 transition-colors pt-1">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </section>
+</Layout>

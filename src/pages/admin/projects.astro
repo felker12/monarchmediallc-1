@@ -1,0 +1,64 @@
+---
+// src/pages/admin/projects.astro
+export const prerender = false;
+
+import Layout from '@layouts/Layout.astro';
+import AddProjectForm from '@components/admin/AddProjectForm.astro';
+import ProjectList from '@components/admin/ProjectList.astro';
+import ProjectForm from '@components/admin/ProjectForm.astro';
+import type { ProjectItem } from '@data/ProjectData';
+
+const token = Astro.cookies.get('admin_token')?.value;
+if (!token) {
+    return Astro.redirect('/admin/login');
+}
+
+//Read status updates passed through the API redirect parameters
+const successMessage = Astro.url.searchParams.get('success') || '';
+const errorMessage = Astro.url.searchParams.get('error') || '';
+
+const API_BASE_URL = import.meta.env.AZURE_API_URL;
+let projects: ProjectItem[] = [];
+
+try {
+    const response = await fetch(`${API_BASE_URL}/api/admin/projects`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    if (response.ok) {
+        projects = await response.json();
+    }
+} catch (e) {
+    console.error('Data pull exception:', e);
+}
+
+const editTargetId = Astro.url.searchParams.get('edit');
+const projectToEdit = editTargetId ? projects.find((p) => p.id === parseInt(editTargetId, 10)) : null;
+---
+
+<Layout title="Monarch Media | Manage Projects">
+    <main class="max-w-4xl mx-auto px-4 py-12 text-white space-y-12">
+        <div>
+            <h1 class="font-header text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent tracking-tight">Project Manager</h1>
+            <p class="text-gray-400 font-body text-sm mt-1">Create and manage portfolio showcase assets.</p>
+        </div>
+
+        {
+            successMessage && !projectToEdit && (
+                <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-emerald-400 font-body text-sm font-medium text-center">
+                    {successMessage}
+                </div>
+            )
+        }
+        {
+            errorMessage && !projectToEdit && (
+                <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-red-400 font-body text-sm font-medium text-center">{errorMessage}</div>
+            )
+        }
+
+        <AddProjectForm />
+
+        <ProjectList projects={projects} />
+
+        <ProjectForm project={projectToEdit} />
+    </main>
+</Layout>

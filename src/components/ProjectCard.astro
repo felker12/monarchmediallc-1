@@ -1,4 +1,5 @@
 ---
+// src/components/ProjectCard.astro
 import type { ProjectItem } from '@data/ProjectData';
 
 interface Props {
@@ -10,10 +11,10 @@ const { project } = Astro.props;
 
 <div
     class="relative w-full max-w-sm md:max-w-none bg-[#121214]
-    rounded-2xl border border-white/20
-    border-b-3 border-b-[#9B5DE5]/70
-    hover:border-[#9B5DE5]/70 hover:shadow-2xl hover:shadow-[#451a6b]/30
-    transition-all duration-400 group flex flex-col overflow-hidden"
+    rounded-2xl border border-white/5
+    border-b-3 border-b-[#9B5DE5]
+    hover:border-[#451a6b]/40 hover:shadow-2xl hover:shadow-[#451a6b]/5
+    transition-all duration-300 group flex flex-col overflow-hidden"
 >
     {
         project.featured && (
@@ -25,9 +26,9 @@ const { project } = Astro.props;
 
     <div class="relative overflow-hidden aspect-video w-full border-b border-white/5 bg-[#1a1a1e]">
         {
-            project.img_path ? (
+            project.imagePath ? (
                 <a
-                    href={project.img_path}
+                    href={project.imagePath}
                     data-pswp-width="1920"
                     data-pswp-height="1080"
                     target="_blank"
@@ -35,8 +36,8 @@ const { project } = Astro.props;
                     class="portfolio-lightbox-trigger block w-full h-full cursor-zoom-in"
                 >
                     <img
-                        src={project.img_path}
-                        alt={project.img_alt_text || `Showcase for ${project.project_name}`}
+                        src={project.imagePath}
+                        alt={project.imageAlt || `Showcase for ${project.title}`}
                         class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                         loading="lazy"
                     />
@@ -50,19 +51,19 @@ const { project } = Astro.props;
     <div class="p-6 flex flex-col justify-between flex-grow space-y-6 text-center">
         <div class="space-y-2">
             <h3 class="font-body font-bold text-xl text-white tracking-tight leading-tight group-hover:text-gray-200 transition-colors">
-                {project.project_name}
+                {project.title}
             </h3>
 
-            {project.client_name && <p class="font-body text-xs text-[#e8cf7c]/90 font-medium uppercase tracking-wider">Client: {project.client_name}</p>}
+            {project.clientName && <p class="font-body text-xs text-[#e8cf7c]/90 font-medium uppercase tracking-wider">Client: {project.clientName}</p>}
 
-            <p class="font-body text-sm text-gray-400 leading-relaxed pt-2">{project.tech_stack}</p>
+            {project.techStack && <p class="font-body text-sm text-gray-400 leading-relaxed pt-2">{project.techStack}</p>}
         </div>
 
         {
-            project.live_url && (
+            project.liveUrl && (
                 <div class="pt-2 flex justify-center">
                     <a
-                        href={project.live_url}
+                        href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         class="inline-flex items-center gap-2 font-body font-semibold text-xs uppercase tracking-wider text-white hover:text-[#e8cf7c] transition-colors group/link"

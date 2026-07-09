@@ -1,15 +1,18 @@
 export interface ProjectItem {
     id: number;
-    created_at: string;
-    project_name: string;
-    client_name: string | null;
-    tech_stack: string | null;
-    live_url: string | null;
-    img_path: string | null;
-    img_alt_text: string | null;
-    display_order: number | null;
+    title: string;
+    description: string;
+    techStack: string | null;
+    liveUrl: string | null;
+    imagePath: string | null;
+    imageAlt: string | null;
+    package: number; //Maps to PackageType enum integers (0 = Core, 1 = Professional, 2 = Premium)
     featured: boolean;
-    visible: boolean;
+    displayOrder: number;
+    completedOn: string | null;
+    isPublic: boolean;
+    industry: number;
+    clientName: string | null;
 }
 
 export interface Database {

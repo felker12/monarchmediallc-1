@@ -79,12 +79,6 @@ html {
     background-attachment: fixed;
 }
 
-@media (max-width: 639px) {
-    html {
-        background: linear-gradient(to bottom, #1c122c 0%, #09090b 100%);
-    }
-}
-
 html,
 body {
     overflow-x: hidden;

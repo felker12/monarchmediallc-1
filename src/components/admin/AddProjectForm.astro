@@ -1,0 +1,136 @@
+---
+// src/components/admin/project-manager/AddProjectForm.astro
+import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
+---
+
+<section class="bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-2xl">
+    <h2 class="font-header text-xl font-bold text-white mb-6 border-b border-white/5 pb-2">Add New Project</h2>
+
+    <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Project Title *</label>
+            <input
+                type="text"
+                name="title"
+                required
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Client Name</label>
+            <input
+                type="text"
+                name="clientName"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Description *</label>
+            <textarea
+                name="description"
+                rows="3"
+                required
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors resize-none"
+            ></textarea>
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Tech Stack (Comma Separated)</label>
+            <input
+                type="text"
+                name="techStack"
+                placeholder="Astro, Tailwind, .NET"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live Website URL</label>
+            <input
+                type="url"
+                name="liveUrl"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image URL Path</label>
+            <input
+                type="text"
+                name="imagePath"
+                placeholder="/images/projects/preview.jpg"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image Alt Text</label>
+            <input
+                type="text"
+                name="imageAlt"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Package Level</label>
+            <select
+                name="package"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            >
+                {PACKAGE_LEVELS.map((opt) => <option value={opt.value}>{opt.label}</option>)}
+            </select>
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Sector</label>
+            <select
+                name="industry"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            >
+                {INDUSTRY_SECTORS.map((opt) => <option value={opt.value}>{opt.label}</option>)}
+            </select>
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Order Sequence Number</label>
+            <input
+                type="number"
+                name="displayOrder"
+                value="0"
+                min="0"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Completion Date</label>
+            <input
+                type="date"
+                name="completedOn"
+                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+            />
+        </div>
+        <div class="flex items-center gap-8 py-2">
+            <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
+                <input
+                    type="checkbox"
+                    name="featured"
+                    value="true"
+                    class="rounded border-white/15 bg-[#1a1a1e] text-purple-500 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                />
+                Featured Item
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
+                <input
+                    type="checkbox"
+                    name="isPublic"
+                    value="true"
+                    checked
+                    class="rounded border-white/15 bg-[#1a1a1e] text-purple-500 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                />
+                Publicly Visible
+            </label>
+        </div>
+        <div class="flex justify-end items-center md:col-span-2 pt-4">
+            <button
+                type="submit"
+                class="bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 hover:opacity-95 text-white font-body font-semibold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all shadow-md active:scale-[0.99]"
+            >
+                Save Project Entry
+            </button>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,201 @@
+---
+// src/components/admin/ProjectForm.astro
+import type { ProjectItem } from '@data/ProjectData';
+import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
+
+interface Props {
+    project?: ProjectItem | null;
+}
+
+const { project = null } = Astro.props;
+const isEditing = !!project;
+---
+
+<dialog id="edit-project-modal" class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-4xl p-4 focus:outline-none">
+    <section class="bg-[#121214] border border-white/10 rounded-2xl p-6 shadow-2xl text-white">
+        <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-3">
+            <h2 class="font-header text-xl font-bold bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                Edit Project: {project?.title}
+            </h2>
+            <button
+                type="button"
+                id="close-modal-btn"
+                class="text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 text-xs font-body font-medium"
+            >
+                Cancel / Close
+            </button>
+        </div>
+
+        <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            <input type="hidden" name="id" value={project?.id} />
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Project Title *</label>
+                <input
+                    type="text"
+                    name="title"
+                    value={project?.title || ''}
+                    required
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Client Name</label>
+                <input
+                    type="text"
+                    name="clientName"
+                    value={project?.clientName || ''}
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Description *</label>
+                <textarea
+                    name="description"
+                    rows="3"
+                    required
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors resize-none"
+                    >{project?.description || ''}</textarea
+                >
+            </div>
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Tech Stack (Comma Separated)</label>
+                <input
+                    type="text"
+                    name="techStack"
+                    value={project?.techStack || ''}
+                    placeholder="Astro, Tailwind, .NET"
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live Website URL</label>
+                <input
+                    type="url"
+                    name="liveUrl"
+                    value={project?.liveUrl || ''}
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image URL Path</label>
+                <input
+                    type="text"
+                    name="imagePath"
+                    value={project?.imagePath || ''}
+                    placeholder="/images/projects/preview.jpg"
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image Alt Text</label>
+                <input
+                    type="text"
+                    name="imageAlt"
+                    value={project?.imageAlt || ''}
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Package Level</label>
+                <select
+                    name="package"
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                >
+                    {
+                        PACKAGE_LEVELS.map((opt) => (
+                            <option value={opt.value} selected={project?.package === opt.value}>
+                                {opt.label}
+                            </option>
+                        ))
+                    }
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Sector</label>
+                <select
+                    name="industry"
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                >
+                    {
+                        INDUSTRY_SECTORS.map((opt) => (
+                            <option value={opt.value} selected={project?.industry === opt.value}>
+                                {opt.label}
+                            </option>
+                        ))
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Order Sequence Number</label>
+                <input
+                    type="number"
+                    name="displayOrder"
+                    value={project ? project.displayOrder : '0'}
+                    min="0"
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Completion Date</label>
+                <input
+                    type="date"
+                    name="completedOn"
+                    value={project?.completedOn || ''}
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                />
+            </div>
+
+            <div class="flex items-center gap-8 py-2">
+                <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
+                    <input
+                        type="checkbox"
+                        name="featured"
+                        value="true"
+                        checked={project?.featured}
+                        class="rounded border-white/15 bg-[#1a1a1e] text-purple-500 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                    />
+                    Featured Item
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
+                    <input
+                        type="checkbox"
+                        name="isPublic"
+                        value="true"
+                        checked={project ? project.isPublic : true}
+                        class="rounded border-white/15 bg-[#1a1a1e] text-purple-500 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                    />
+                    Publicly Visible
+                </label>
+            </div>
+
+            <div class="flex justify-end items-center md:col-span-2 pt-4">
+                <button
+                    type="submit"
+                    class="font-body font-semibold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all shadow-md active:scale-[0.99] text-white bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-500 hover:opacity-95"
+                >
+                    Update Project Details
+                </button>
+            </div>
+        </form>
+    </section>
+</dialog>
+
+<script is:inline define:vars={{ isEditing }}>
+    const dialog = document.getElementById('edit-project-modal');
+    const closeBtn = document.getElementById('close-modal-btn');
+
+    if (isEditing && dialog) {
+        dialog.showModal();
+    }
+
+    closeBtn?.addEventListener('click', () => {
+        if (dialog) dialog.close();
+        window.location.search = '';
+    });
+</script>

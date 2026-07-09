@@ -1,26 +1,31 @@
 ---
-export const prerender = false; // Tells Netlify to fetch from the DB at runtime on every page hit
+export const prerender = false; //Tells Netlify to fetch from the DB at runtime on every page hit
 
 import Layout from '@layouts/Layout.astro';
-import { createClient } from '@supabase/supabase-js';
-import type { Database, ProjectItem } from '@data/ProjectData';
+import type { ProjectItem } from '@data/ProjectData';
 import ProjectCard from '@components/ProjectCard.astro';
 
-//Initialize the Supabase Client with the prefixed public variables
-const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_KEY;
+const API_BASE_URL = import.meta.env.AZURE_API_URL;
 
-const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_KEY);
+let projects: ProjectItem[] | null = null;
+let error = false;
 
-//Fetch items from the public.MMLLC_Projects table matching database columns
-const { data, error } = await supabase
-    .from('Projects')
-    .select('*')
-    .eq('visible', true) //Only fetch projects where visible is true
-    .order('display_order', { ascending: true })
-    .order('created_at', { ascending: true }); // Order by display_order first, then created_at as a fallback
+try {
+    //Hits your Azure controller endpoint
+    const response = await fetch(`${API_BASE_URL}/api/projects`);
 
-const projects = data as ProjectItem[] | null;
+    if (!response.ok) {
+        throw new Error(`API returned status: ${response.status}`);
+    }
+
+    const rawData = (await response.json()) as ProjectItem[];
+
+    //Client-side sort fallback just in case API hasn't enforced public visibility or custom ordering yet
+    projects = rawData.filter((p) => p.isPublic).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+} catch (e) {
+    console.error('Failed fetching projects from Azure API:', e);
+    error = true;
+}
 ---
 
 <Layout title="Monarch Media LLC | Portfolio">
@@ -60,7 +65,7 @@ const projects = data as ProjectItem[] | null;
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: '#photo-gallery',
-        // Target ONLY the anchor links containing the lightbox class
+        //Target ONLY the anchor links containing the lightbox class
         children: 'a.portfolio-lightbox-trigger',
         pswpModule: () => import('photoswipe')
     });
