@@ -69,20 +69,8 @@ const { title } = Astro.props;
         <meta name="generator" content={Astro.generator} />
         <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
 
-        <!-- Update the script tag in your Layout file to look like this: -->
-        <script is:inline data-goatcounter="https://felker12.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
-        <script>
-            // This handles Astro's page lifecycle events
-            document.addEventListener('astro:page-load', () => {
-                // Check if window.goatcounter exists and has the count function
-                if (window.goatcounter && typeof window.goatcounter.count === 'function') {
-                    window.goatcounter.count({
-                        path: location.pathname + location.search
-                    });
-                }
-            });
-        </script>
+        <!-- GoatCounter -->
+        <script is:inline data-goatcounter="https://monarchmediallc.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </head>
 
     <body class="antialiased text-white entry-fade-in">
