@@ -1,22 +1,32 @@
+// src/middleware.ts
 import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware((context, next) => {
-    //Read the ultra-secure HttpOnly cookie safely on the server
-    const hasToken = context.cookies.has("admin_token");
+    const currentPath = context.url.pathname;
 
-    //Assign the boolean to Astro locals so ANY page or component can read it
+    // 1. Check if the request is targeting an administrative area or an admin API endpoint
+    const isAdminRoute = currentPath.startsWith('/admin') || currentPath.startsWith('/api/admin');
+
+    if (!isAdminRoute) {
+        // Safe fall-through for static public pages (/, /portfolio, /contact)
+        // No cookie reading happens here, meaning NO headers are touched during build compile!
+        context.locals.isLoggedIn = false;
+        return next();
+    }
+
+    // 2. Authentication Logic (ONLY runs on administrative routes)
+    const hasToken = context.cookies.has("admin_token");
     context.locals.isLoggedIn = hasToken;
 
-    //Automated Guard Rail: Prevent logged-in users from seeing the login page again
-    if (context.url.pathname === '/admin/login' && hasToken) {
+    // Guard Rail: Prevent logged-in users from seeing the login page again
+    if (currentPath === '/admin/login' && hasToken) {
         return context.redirect('/admin/dashboard');
     }
 
-    //Automated Guard Rail: Protect administrative pages from unauthenticated eyes
-    if (context.url.pathname.startsWith('/admin') && context.url.pathname !== '/admin/login' && !hasToken) {
+    // Guard Rail: Protect administrative pages from unauthenticated eyes
+    if (currentPath !== '/admin/login' && !hasToken) {
         return context.redirect('/admin/login');
     }
 
-    //Continue to the requested page smoothly
     return next();
 });

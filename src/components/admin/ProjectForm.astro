@@ -1,6 +1,5 @@
 ---
 // src/components/admin/ProjectForm.astro
-import type { ProjectItem } from '@data/ProjectData';
 import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
 
 interface Props {
@@ -10,8 +9,6 @@ interface Props {
 const { project = null, images = [] } = Astro.props;
 const token = Astro.cookies.get('admin_token')?.value || '';
 const isEditing = !!project;
----
-
 ---
 
 <dialog id="edit-project-modal" class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-4xl p-4 focus:outline-none">

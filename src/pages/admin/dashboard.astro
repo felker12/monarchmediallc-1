@@ -3,7 +3,7 @@
 import Layout from '@layouts/Layout.astro';
 export const prerender = false;
 
-//Authenticate session check
+// Authenticate session check
 if (!Astro.cookies.has('admin_token')) {
     return Astro.redirect('/admin/login');
 }
@@ -14,7 +14,7 @@ if (!Astro.cookies.has('admin_token')) {
 const GOATCOUNTER_SUBDOMAIN = 'monarchmediallc';
 const BASE_URL = `https://${GOATCOUNTER_SUBDOMAIN}.goatcounter.com/counter//.json`;
 
-//Define a helper to securely fetch ranges
+// Define a helper to securely fetch ranges
 async function fetchViews(params = '') {
     try {
         const response = await fetch(`${BASE_URL}${params}`);
@@ -26,7 +26,7 @@ async function fetchViews(params = '') {
     }
 }
 
-//Fetch stats in parallel to maintain rapid page speeds
+// Fetch stats in parallel to maintain rapid page speeds
 const [viewsToday, viewsWeek, viewsMonth, viewsYear] = await Promise.all([
     fetchViews('?start=today'),
     fetchViews('?start=week'),
@@ -44,89 +44,124 @@ const [viewsToday, viewsWeek, viewsMonth, viewsYear] = await Promise.all([
             <p class="font-body text-sm text-gray-400 font-medium">Welcome back. Select an administrative node below to manage live platform datasets.</p>
         </div>
 
-        <!-- Grid Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Project Portfolio Card -->
             <a
                 href="/admin/projects"
                 class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-cyan-500/30 hover:bg-white/[0.01] transition-all duration-300"
             >
-                <!-- Keep your original Project Portfolio inner content here -->
                 <div class="flex items-start justify-between">
                     <div class="space-y-4">
                         <div
                             class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"
-                                ><path
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
-                                ></path></svg
-                            >
+                                ></path>
+                            </svg>
                         </div>
                         <div class="space-y-1">
                             <h2 class="font-body font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">Project Portfolio</h2>
                             <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Create, refine, or drop active project entries synced directly to your Azure SQLite database pipeline.
+                                Create, refine, or remove showcase project entries synced directly to your production portfolio pipeline.
                             </p>
                         </div>
                     </div>
-                    <span class="text-gray-600 group-hover:text-cyan-400 transition-colors pt-1"
-                        ><svg
+                    <span class="text-gray-600 group-hover:text-cyan-400 transition-colors pt-1">
+                        <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke-width="2"
                             stroke="currentColor"
                             class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
-                            ><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg
-                        ></span
-                    >
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                        </svg>
+                    </span>
                 </div>
             </a>
 
-            <!-- Team Roster Card -->
             <a
                 href="/admin/team"
                 class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-purple-500/40 hover:bg-white/[0.01] transition-all duration-300"
             >
-                <!-- Keep your original Team Roster inner content here -->
                 <div class="flex items-start justify-between">
                     <div class="space-y-4">
                         <div
                             class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"
-                                ><path
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-2.533-4.65l-2.21-.77a4.902 4.902 0 00-2.427 0l-2.21.77a4.124 4.124 0 00-2.533 4.65 9.338 9.338 0 004.122.952zM15 4.5a3 3 0 110 6 3 3 0 010-6zM3.651 19.02a11.956 11.956 0 014.244-.803l1.1-.38a4.903 4.903 0 011.02-.275 4.903 4.903 0 01-1.02-.275l-1.1-.38a11.956 11.956 0 01-4.244-.803A4.119 4.119 0 001.125 15V18a1.125 1.125 0 001.125 1.125h1.401zM11.25 7.5a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                                ></path></svg
-                            >
+                                ></path>
+                            </svg>
                         </div>
                         <div class="space-y-1">
                             <h2 class="font-body font-bold text-lg text-white group-hover:text-purple-400 transition-colors">Team Roster</h2>
                             <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Organize company profile positions, modify details, or display new operator cards across public landing assets.
+                                Update company team profiles, positions, and operational details displayed across public layout sections.
                             </p>
                         </div>
                     </div>
-                    <span class="text-gray-600 group-hover:text-purple-400 transition-colors pt-1"
-                        ><svg
+                    <span class="text-gray-600 group-hover:text-purple-400 transition-colors pt-1">
+                        <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke-width="2"
                             stroke="currentColor"
                             class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
-                            ><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg
-                        ></span
-                    >
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                        </svg>
+                    </span>
                 </div>
             </a>
 
-            <!-- ENHANCED Analytics Intelligence Node with live counts -->
+            <a
+                href="/admin/images"
+                class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-amber-500/30 hover:bg-white/[0.01] transition-all duration-300 md:col-span-2"
+            >
+                <div class="flex items-start justify-between">
+                    <div class="space-y-4">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H2.25A1.5 1.5 0 00.75 6v12.75a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <h2 class="font-body font-bold text-lg text-white group-hover:text-amber-400 transition-colors">Media Library</h2>
+                            <p class="font-body text-xs text-gray-400 leading-relaxed">
+                                Upload dynamic showcase images, manage descriptive alt data, and maintain global media assets links.
+                            </p>
+                        </div>
+                    </div>
+                    <span class="text-gray-600 group-hover:text-amber-400 transition-colors pt-1">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
             <div
                 class="group md:col-span-2 bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-[var(--color-complementary)]/40 transition-all duration-300"
             >
@@ -154,7 +189,7 @@ const [viewsToday, viewsWeek, viewsMonth, viewsYear] = await Promise.all([
                                 </span>
                             </div>
                             <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Privacy-friendly engagement processing through Monarch Media pipelines. Click to expand full maps, referrers, and systems logs.
+                                Live user interaction monitoring. Expand node to inspect traffic maps, channel click pathways, and platform statistics.
                             </p>
                         </div>
                     </div>
@@ -182,7 +217,6 @@ const [viewsToday, viewsWeek, viewsMonth, viewsYear] = await Promise.all([
                     </a>
                 </div>
 
-                <!-- Live Metrics Grid -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-white/[0.03]">
                     <div class="bg-black/20 rounded-xl p-3 border border-white/5">
                         <div class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 font-body">Today</div>

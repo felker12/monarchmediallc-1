@@ -1,0 +1,112 @@
+---
+// src/components/admin/EditImageModal.astro
+interface Props {
+    API_URL: string;
+    token: string;
+}
+
+const { API_URL, token } = Astro.props;
+---
+
+<dialog id="edit-modal" class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-md p-4 focus:outline-none">
+    <section class="bg-[#121214] border border-white/10 rounded-2xl p-6 shadow-2xl text-white">
+        <h3 class="font-header text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent mb-5">Update Image Metadata</h3>
+
+        <form id="edit-form" class="space-y-5">
+            <input type="hidden" id="edit-image-id" name="id" />
+
+            <div class="aspect-video w-full bg-[#1a1a1e] rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+                <img id="edit-preview-img" src="" alt="Thumbnail preview" class="w-full h-full object-contain" />
+            </div>
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Alt Text / Description</label>
+                <input
+                    type="text"
+                    id="edit-alt-input"
+                    name="altText"
+                    placeholder="Describe this media for screen readers..."
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500/60 text-white font-body"
+                />
+            </div>
+
+            <div class="flex justify-end gap-3 pt-3 border-t border-white/5">
+                <button
+                    type="button"
+                    onclick="document.getElementById('edit-modal').close()"
+                    class="px-4 py-2.5 rounded-xl text-xs font-body font-semibold uppercase tracking-wider bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
+                >
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    class="px-5 py-2.5 rounded-xl text-xs font-body font-semibold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500 text-white transition-colors shadow-md"
+                >
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </section>
+</dialog>
+
+<script is:inline define:vars={{ API_URL, token }}>
+    const editModal = document.getElementById('edit-modal');
+    const editForm = document.getElementById('edit-form');
+    const editIdInput = document.getElementById('edit-image-id');
+    const editAltInput = document.getElementById('edit-alt-input');
+    const editPreviewImg = document.getElementById('edit-preview-img');
+
+    // Global listener framework hook to listen to page grid button click events
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.edit-image-btn');
+        if (!btn) return;
+
+        editIdInput.value = btn.getAttribute('data-edit-id');
+        editAltInput.value = btn.getAttribute('data-edit-alt');
+        editPreviewImg.src = btn.getAttribute('data-edit-url');
+        editModal.showModal();
+    });
+
+    // Handle Metadata Update Request Submission
+    editForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = editIdInput.value;
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Saving...';
+        }
+
+        const payload = {
+            altText: editAltInput.value
+        };
+
+        try {
+            const res = await fetch(`${API_URL}/api/admin/images/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                alert('Failed to update asset metadata properties.');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Save Changes';
+                }
+            }
+        } catch (err) {
+            alert('Network error trying to modify record metadata.');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Save Changes';
+            }
+        }
+    });
+</script>

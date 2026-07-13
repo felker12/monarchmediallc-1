@@ -87,21 +87,13 @@ const industryMap: Record<number, string> = {
                                     Edit
                                 </a>
 
-                                <form
-                                    method="POST"
-                                    action="/api/admin/projects"
-                                    onsubmit="return confirm('Are you sure you want to permanently delete this project?');"
-                                    class="inline m-0"
+                                <button
+                                    type="button"
+                                    data-delete-id={proj.id}
+                                    class="delete-project-btn text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 px-4 py-2.5 rounded-xl border border-red-500/10 transition-all font-body font-semibold active:scale-[0.98] cursor-pointer"
                                 >
-                                    <input type="hidden" name="id" value={proj.id} />
-                                    <input type="hidden" name="action" value="delete" />
-                                    <button
-                                        type="submit"
-                                        class="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 px-4 py-2.5 rounded-xl border border-red-500/10 transition-all font-body font-semibold active:scale-[0.98]"
-                                    >
-                                        Delete
-                                    </button>
-                                </form>
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -110,3 +102,39 @@ const industryMap: Record<number, string> = {
         }
     </div>
 </section>
+
+<script is:inline>
+    // Event delegation handling async delete requests cleanly via JSON payload
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.delete-project-btn');
+        if (!btn) return;
+
+        if (!confirm('Are you sure you want to permanently delete this project?')) return;
+
+        const projectId = parseInt(btn.getAttribute('data-delete-id'), 10);
+
+        try {
+            // Sends structured JSON matching your update form patterns
+            const res = await fetch('/api/admin/projects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: projectId,
+                    action: 'delete'
+                })
+            });
+
+            if (res.ok) {
+                const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?success=Project+deleted+successfully!';
+                window.location.href = cleanUrl;
+            } else {
+                const errData = await res.json().catch(() => ({}));
+                alert('Delete failed: ' + (errData.error || 'Server processing error'));
+            }
+        } catch (err) {
+            alert('Network error encountered trying to remove project.');
+        }
+    });
+</script>

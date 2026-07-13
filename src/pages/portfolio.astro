@@ -1,25 +1,23 @@
 ---
 // src/pages/portfolio.astro
-export const prerender = false; // Tells Netlify to fetch from the DB at runtime on every page hit
+export const prerender = true;
 
 import Layout from '@layouts/Layout.astro';
 import type { ProjectItem } from '@data/ProjectData';
 import ProjectCard from '@components/ProjectCard.astro';
 
-const API_BASE_URL = import.meta.env.AZURE_API_URL;
+const targetUrl = new URL('/api/projects', import.meta.env.AZURE_API_URL).href;
 
 let projects: ProjectItem[] | null = null;
 let error = false;
 
 try {
-    // Hits your public Azure controller endpoint safely
-    const response = await fetch(`${API_BASE_URL}/api/projects`);
+    const response = await fetch(targetUrl);
 
     if (!response.ok) {
         throw new Error(`API returned status: ${response.status}`);
     }
 
-    // The backend now securely includes and returns the SiteImage entity inside this array
     projects = (await response.json()) as ProjectItem[];
 } catch (e) {
     console.error('Failed fetching projects from Azure API:', e);

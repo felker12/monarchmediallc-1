@@ -1,0 +1,77 @@
+---
+// src/components/AdminNavBar.astro
+const publicItems = [
+    { linkText: 'Home', href: '/' },
+    { linkText: 'Portfolio', href: '/portfolio' }
+];
+
+const adminItems = [
+    { linkText: 'Dashboard', href: '/admin/dashboard' },
+    { linkText: 'Projects', href: '/admin/projects' },
+    { linkText: 'Images', href: '/admin/images' },
+    { linkText: 'Team', href: '/admin/team' }
+];
+
+const currentPath = Astro.url.pathname;
+const isCurrentPageAdmin = currentPath.startsWith('/admin') && currentPath !== '/admin/login';
+
+const getLinkClass = (href: string) => {
+    const isCurrent = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+    return isCurrent
+        ? 'text-white bg-white/10 shadow-[inset_0_0_12px_rgba(255,255,255,0.05)] border-t border-white/5 font-semibold'
+        : 'text-gray-400 hover:text-white hover:bg-white/5 active:bg-white/10';
+};
+---
+
+<nav class="flex items-center gap-4 sm:gap-6 relative">
+    <ul class="hidden md:flex items-center gap-1 sm:gap-2 font-body text-sm font-medium tracking-wide">
+        {
+            publicItems.map((item) => (
+                <li>
+                    <a href={item.href} class={`inline-block px-3 py-2 rounded-lg transition-all duration-200 ${getLinkClass(item.href)}`}>
+                        {item.linkText}
+                    </a>
+                </li>
+            ))
+        }
+
+        <li class="relative group py-2">
+            <button
+                type="button"
+                class={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${isCurrentPageAdmin ? 'text-white bg-white/10 font-semibold' : 'text-gray-400 group-hover:text-white'}`}
+            >
+                Management
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-transform duration-200 group-hover:rotate-180"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+                </svg>
+            </button>
+            <div
+                class="absolute left-0 top-full mt-1 w-48 bg-[#121214] border border-white/5 rounded-xl shadow-2xl p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform scale-95 group-hover:scale-100 z-50 origin-top-left backdrop-blur-md"
+            >
+                {
+                    adminItems.map((item) => (
+                        <a href={item.href} class={`block px-3 py-2 text-xs rounded-lg transition-all duration-150 ${getLinkClass(item.href)}`}>
+                            {item.linkText}
+                        </a>
+                    ))
+                }
+            </div>
+        </li>
+    </ul>
+
+    <div class="hidden md:block">
+        <a
+            href="/api/admin/logout"
+            class="font-body text-sm font-semibold uppercase tracking-wider text-red-400 hover:text-red-300 px-3 py-2 rounded-lg hover:bg-red-500/5 transition-all inline-block"
+        >
+            Logout
+        </a>
+    </div>
+</nav>
