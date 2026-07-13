@@ -6,27 +6,44 @@ import ProjectList from '@components/admin/ProjectList.astro';
 import ProjectForm from '@components/admin/ProjectForm.astro';
 import type { ProjectItem } from '@data/ProjectData';
 
+export const prerender = false;
+
 const token = Astro.cookies.get('admin_token')?.value;
 if (!token) {
     return Astro.redirect('/admin/login');
 }
 
-//Read status updates passed through the API redirect parameters
 const successMessage = Astro.url.searchParams.get('success') || '';
 const errorMessage = Astro.url.searchParams.get('error') || '';
 
-const API_BASE_URL = import.meta.env.AZURE_API_URL;
+//Check Astro's meta environment or fall back to standard process environments for server contexts
+const API_BASE_URL = import.meta.env.AZURE_API_URL || 'https://your-dotnet-app-service.azurewebsites.net';
+
 let projects: ProjectItem[] = [];
+let availableImages: any[] = [];
 
 try {
+    //Fetch Projects safely
     const response = await fetch(`${API_BASE_URL}/api/admin/projects`, {
         headers: { Authorization: `Bearer ${token}` }
     });
     if (response.ok) {
         projects = await response.json();
+    } else {
+        console.error(`Backend project fetch returned status code: ${response.status}`);
+    }
+
+    //Fetch Site Images Library safely
+    const imagesResponse = await fetch(`${API_BASE_URL}/api/admin/images`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    if (imagesResponse.ok) {
+        availableImages = await imagesResponse.json();
+    } else {
+        console.error(`Backend images fetch returned status code: ${imagesResponse.status}`);
     }
 } catch (e) {
-    console.error('Data pull exception:', e);
+    console.error('Data pull exception handled safely without crashing route:', e);
 }
 
 const editTargetId = Astro.url.searchParams.get('edit');
@@ -53,10 +70,10 @@ const projectToEdit = editTargetId ? projects.find((p) => p.id === parseInt(edit
             )
         }
 
-        <AddProjectForm />
+        <AddProjectForm images={availableImages} />
 
         <ProjectList projects={projects} />
 
-        <ProjectForm project={projectToEdit} />
+        <ProjectForm project={projectToEdit} images={availableImages} />
     </main>
 </Layout>

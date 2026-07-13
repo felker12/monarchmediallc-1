@@ -1,12 +1,18 @@
 ---
-// src/components/admin/project-manager/AddProjectForm.astro
+// src/components/admin/AddProjectForm.astro
 import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
+
+interface Props {
+    images: any[];
+}
+const { images = [] } = Astro.props;
+const token = Astro.cookies.get('admin_token')?.value || '';
 ---
 
 <section class="bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-2xl">
     <h2 class="font-header text-xl font-bold text-white mb-6 border-b border-white/5 pb-2">Add New Project</h2>
 
-    <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form id="add-project-form" method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
             <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Project Title *</label>
             <input
@@ -24,69 +30,74 @@ import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
             />
         </div>
+
         <div class="md:col-span-2">
             <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Description *</label>
             <textarea
                 name="description"
-                rows="3"
                 required
+                rows="3"
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors resize-none"
             ></textarea>
         </div>
+
         <div>
             <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Tech Stack (Comma Separated)</label>
             <input
                 type="text"
                 name="techStack"
-                placeholder="Astro, Tailwind, .NET"
+                placeholder="Astro, React, Tailwind"
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
             />
         </div>
         <div>
-            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live Website URL</label>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live URL</label>
             <input
                 type="url"
                 name="liveUrl"
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
             />
         </div>
-        <div>
-            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image URL Path</label>
-            <input
-                type="text"
-                name="imagePath"
-                placeholder="/images/projects/preview.jpg"
+
+        <div class="md:col-span-2">
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2"> Link Portfolio Image Asset </label>
+            <select
+                name="siteImageId"
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
-            />
+            >
+                <option value="">-- No Image / Decorative Only --</option>
+                {
+                    images.map((img) => (
+                        <option value={img.id}>
+                            {img.fileName} {img.altText ? `(${img.altText})` : ''}
+                        </option>
+                    ))
+                }
+            </select>
         </div>
+
         <div>
-            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image Alt Text</label>
-            <input
-                type="text"
-                name="imageAlt"
-                class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
-            />
-        </div>
-        <div>
-            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Package Level</label>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Service Package Tier</label>
             <select
                 name="package"
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
             >
-                {PACKAGE_LEVELS.map((opt) => <option value={opt.value}>{opt.label}</option>)}
+                {PACKAGE_LEVELS.map((level) => <option value={level.value}>{level.label}</option>)}
             </select>
         </div>
+
         <div>
-            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Sector</label>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Vertical</label>
             <select
                 name="industry"
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
             >
-                {INDUSTRY_SECTORS.map((opt) => <option value={opt.value}>{opt.label}</option>)}
+                {INDUSTRY_SECTORS.map((sec) => <option value={sec.value}>{sec.label}</option>)}
             </select>
         </div>
+
         <div>
-            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Order Sequence Number</label>
+            <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Sort Order</label>
             <input
                 type="number"
                 name="displayOrder"
@@ -103,6 +114,7 @@ import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
                 class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
             />
         </div>
+
         <div class="flex items-center gap-8 py-2">
             <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
                 <input
@@ -124,6 +136,7 @@ import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
                 Publicly Visible
             </label>
         </div>
+
         <div class="flex justify-end items-center md:col-span-2 pt-4">
             <button
                 type="submit"
@@ -134,3 +147,49 @@ import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
         </div>
     </form>
 </section>
+
+<script is:inline define:vars={{ token }}>
+    const addForm = document.getElementById('add-project-form');
+
+    addForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(addForm);
+        const data = {};
+
+        formData.forEach((value, key) => {
+            if (key === 'featured' || key === 'isPublic') {
+                data[key] = value === 'true';
+            } else if (key === 'siteImageId') {
+                data[key] = value ? parseInt(value, 10) : null;
+            } else if (key === 'displayOrder') {
+                data[key] = parseInt(value, 10);
+            } else if (key === 'package' || key === 'industry') {
+                data[key] = parseInt(value, 10);
+            } else {
+                data[key] = value;
+            }
+        });
+
+        if (!data.hasOwnProperty('featured')) data['featured'] = false;
+        if (!data.hasOwnProperty('isPublic')) data['isPublic'] = false;
+
+        try {
+            const res = await fetch(addForm.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                window.location.href = window.location.pathname + '?success=Project+created+successfully!';
+            } else {
+                const errData = await res.json().catch(() => ({}));
+                alert('Creation failed: ' + (errData.error || 'Server error'));
+            }
+        } catch (err) {
+            alert('Network error encountered trying to save project entry.');
+        }
+    });
+</script>

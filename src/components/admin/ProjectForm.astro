@@ -4,11 +4,14 @@ import type { ProjectItem } from '@data/ProjectData';
 import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
 
 interface Props {
-    project?: ProjectItem | null;
+    project?: any;
+    images: any[];
 }
-
-const { project = null } = Astro.props;
+const { project = null, images = [] } = Astro.props;
+const token = Astro.cookies.get('admin_token')?.value || '';
 const isEditing = !!project;
+---
+
 ---
 
 <dialog id="edit-project-modal" class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-4xl p-4 focus:outline-none">
@@ -22,11 +25,11 @@ const isEditing = !!project;
                 id="close-modal-btn"
                 class="text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 text-xs font-body font-medium"
             >
-                Cancel / Close
+                Close
             </button>
         </div>
 
-        <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+        <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <input type="hidden" name="id" value={project?.id} />
 
             <div>
@@ -34,11 +37,12 @@ const isEditing = !!project;
                 <input
                     type="text"
                     name="title"
-                    value={project?.title || ''}
                     required
+                    value={project?.title}
                     class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
                 />
             </div>
+
             <div>
                 <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Client Name</label>
                 <input
@@ -53,25 +57,25 @@ const isEditing = !!project;
                 <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Description *</label>
                 <textarea
                     name="description"
-                    rows="3"
                     required
+                    rows="3"
                     class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors resize-none"
-                    >{project?.description || ''}</textarea
+                    >{project?.description}</textarea
                 >
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Tech Stack (Comma Separated)</label>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Tech Stack</label>
                 <input
                     type="text"
                     name="techStack"
                     value={project?.techStack || ''}
-                    placeholder="Astro, Tailwind, .NET"
                     class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
                 />
             </div>
+
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live Website URL</label>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live URL</label>
                 <input
                     type="url"
                     name="liveUrl"
@@ -80,51 +84,33 @@ const isEditing = !!project;
                 />
             </div>
 
-            <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image URL Path</label>
-                <input
-                    type="text"
-                    name="imagePath"
-                    value={project?.imagePath || ''}
-                    placeholder="/images/projects/preview.jpg"
+            <div class="md:col-span-2">
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2"> Link Portfolio Image Asset </label>
+                <select
+                    name="siteImageId"
                     class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
-                />
-            </div>
-            <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Image Alt Text</label>
-                <input
-                    type="text"
-                    name="imageAlt"
-                    value={project?.imageAlt || ''}
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
-                />
+                >
+                    <option value="" selected={project?.siteImageId === null}>-- No Image / Decorative Only --</option>
+                    {
+                        images.map((img) => (
+                            <option value={img.id} selected={project?.siteImageId === img.id}>
+                                {img.fileName} {img.altText ? `(${img.altText})` : ''}
+                            </option>
+                        ))
+                    }
+                </select>
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Package Level</label>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Service Package Tier</label>
                 <select
                     name="package"
                     class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
                 >
                     {
-                        PACKAGE_LEVELS.map((opt) => (
-                            <option value={opt.value} selected={project?.package === opt.value}>
-                                {opt.label}
-                            </option>
-                        ))
-                    }
-                </select>
-            </div>
-            <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Sector</label>
-                <select
-                    name="industry"
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
-                >
-                    {
-                        INDUSTRY_SECTORS.map((opt) => (
-                            <option value={opt.value} selected={project?.industry === opt.value}>
-                                {opt.label}
+                        PACKAGE_LEVELS.map((level) => (
+                            <option value={level.value} selected={project?.package === level.value}>
+                                {level.label}
                             </option>
                         ))
                     }
@@ -132,15 +118,32 @@ const isEditing = !!project;
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Order Sequence Number</label>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Vertical</label>
+                <select
+                    name="industry"
+                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                >
+                    {
+                        INDUSTRY_SECTORS.map((sec) => (
+                            <option value={sec.value} selected={project?.industry === sec.value}>
+                                {sec.label}
+                            </option>
+                        ))
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Sort Order</label>
                 <input
                     type="number"
                     name="displayOrder"
-                    value={project ? project.displayOrder : '0'}
+                    value={project?.displayOrder || 0}
                     min="0"
                     class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
                 />
             </div>
+
             <div>
                 <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Completion Date</label>
                 <input
@@ -186,16 +189,69 @@ const isEditing = !!project;
     </section>
 </dialog>
 
-<script is:inline define:vars={{ isEditing }}>
+<script is:inline define:vars={{ isEditing, token }}>
     const dialog = document.getElementById('edit-project-modal');
     const closeBtn = document.getElementById('close-modal-btn');
+    const editForm = dialog?.querySelector('form');
 
     if (isEditing && dialog) {
         dialog.showModal();
     }
 
+    // Intercept form submission to prevent cookie dropouts
+    editForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Convert FormData directly to a clean JSON object for the endpoint payload
+        const formData = new FormData(editForm);
+        const data = {};
+
+        formData.forEach((value, key) => {
+            // Convert checkboxes to pure booleans
+            if (key === 'featured' || key === 'isPublic') {
+                data[key] = value === 'true';
+            } else if (key === 'siteImageId') {
+                data[key] = value ? parseInt(value, 10) : null;
+            } else if (key === 'displayOrder' || key === 'id') {
+                data[key] = parseInt(value, 10);
+            } else if (key === 'package' || key === 'industry') {
+                data[key] = parseInt(value, 10);
+            } else {
+                data[key] = value;
+            }
+        });
+
+        // Ensure missing checkboxes default explicitly to false
+        if (!data.hasOwnProperty('featured')) data['featured'] = false;
+        if (!data.hasOwnProperty('isPublic')) data['isPublic'] = false;
+
+        try {
+            const res = await fetch(editForm.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                // Clear out search parameters and reload smoothly
+                const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?success=Project+updated+successfully!';
+                window.location.href = cleanUrl;
+            } else {
+                const errData = await res.json().catch(() => ({}));
+                alert('Update failed: ' + (errData.error || 'Server processing error'));
+            }
+        } catch (err) {
+            alert('Network error encountered trying to update project details.');
+        }
+    });
+
     closeBtn?.addEventListener('click', () => {
-        if (dialog) dialog.close();
-        window.location.search = '';
+        if (dialog) {
+            dialog.close();
+            const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+            window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+        }
     });
 </script>
