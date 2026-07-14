@@ -8,5 +8,8 @@ export default defineConfig({
         plugins: [tailwindcss()]
     },
     output: 'static',
-    adapter: netlify()
+    adapter: netlify(),
+    image: { 
+        domains: ['epurfjikrqmjfjrdnuyy.supabase.co']
+    }
 });

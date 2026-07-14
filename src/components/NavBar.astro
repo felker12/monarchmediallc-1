@@ -5,7 +5,6 @@ const publicItems = [
     { linkText: 'Portfolio', href: '/portfolio' }
 ];
 
-// Read the current path at compile time for static pages (works safely with SSG)
 const currentPath = Astro.url.pathname;
 
 const getLinkClass = (href: string) => {
@@ -32,4 +31,60 @@ const getLinkClass = (href: string) => {
     <div class="hidden md:block">
         <a href="/admin/login" class={`font-body text-sm font-medium px-3 py-2 rounded-lg transition-all ${getLinkClass('/admin/login')}`}> Admin Portal </a>
     </div>
+
+    <button
+        id="public-menu-toggle"
+        type="button"
+        class="md:hidden p-2 text-gray-400 hover:text-white focus:outline-none transition-colors"
+        aria-label="Toggle Menu"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 menu-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+        </svg>
+    </button>
+
+    <div
+        id="public-mobile-menu"
+        class="absolute right-0 top-full mt-2 w-48 bg-[#121214]/95 border border-white/5 rounded-xl shadow-2xl p-2 opacity-0 invisible scale-95 transition-all duration-200 z-50 origin-top-right backdrop-blur-md md:hidden"
+    >
+        <ul class="space-y-1 font-body text-sm font-medium">
+            {
+                publicItems.map((item) => (
+                    <li>
+                        <a href={item.href} class={`block px-3 py-2 rounded-lg transition-all ${getLinkClass(item.href)}`}>
+                            {item.linkText}
+                        </a>
+                    </li>
+                ))
+            }
+            <li class="pt-1.5 mt-1.5 border-t border-white/5">
+                <a href="/admin/login" class={`block px-3 py-2 rounded-lg transition-all ${getLinkClass('/admin/login')}`}> Admin Portal </a>
+            </li>
+        </ul>
+    </div>
 </nav>
+
+<script>
+    const toggleBtn = document.getElementById('public-menu-toggle');
+    const mobileMenu = document.getElementById('public-mobile-menu');
+
+    if (toggleBtn && mobileMenu) {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = !mobileMenu.classList.contains('invisible');
+
+            if (isOpen) {
+                mobileMenu.classList.add('opacity-0', 'invisible', 'scale-95');
+            } else {
+                mobileMenu.classList.remove('opacity-0', 'invisible', 'scale-95');
+            }
+        });
+
+        // Click wrapper guard rules for safety handling
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target as Node) && !toggleBtn.contains(e.target as Node)) {
+                mobileMenu.classList.add('opacity-0', 'invisible', 'scale-95');
+            }
+        });
+    }
+</script>

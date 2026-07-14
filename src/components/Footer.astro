@@ -1,5 +1,7 @@
 ---
-
+// src/components/Footer.astro
+import { Image } from 'astro:assets';
+import inlineLogo from '@assets/Monarch-inline-whtcol.png';
 ---
 
 <footer class="pt-16 pb-12 sm:pt-24 sm:pb-16 text-center">
@@ -7,6 +9,7 @@
         Copyright © {new Date().getFullYear()} Monarch Media LLC. All rights reserved.
     </div>
     <p id="mmSitetag" class="text-gray-100 flex items-start pt-4 justify-center">
-        Website by <img class="px-2 h-5 inline-block drop-shadow-sm" alt="Monarch Media LLC" src="https://i.postimg.cc/XJPr9Tyd/Monarch-inline-whtcol.png" />
+        Website by
+        <Image src={inlineLogo} alt="Monarch Media LLC" class="px-2 h-5 inline-block drop-shadow-sm w-auto" loading="lazy" />
     </p>
 </footer>

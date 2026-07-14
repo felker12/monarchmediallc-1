@@ -74,4 +74,77 @@ const getLinkClass = (href: string) => {
             Logout
         </a>
     </div>
+
+    <button
+        id="admin-menu-toggle"
+        type="button"
+        class="md:hidden p-2 text-gray-400 hover:text-white focus:outline-none transition-colors"
+        aria-label="Toggle Menu"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+        </svg>
+    </button>
+
+    <div
+        id="admin-mobile-menu"
+        class="absolute right-0 top-full mt-2 w-52 bg-[#121214]/95 border border-white/5 rounded-xl shadow-2xl p-2 opacity-0 invisible scale-95 transition-all duration-200 z-50 origin-top-right backdrop-blur-md md:hidden"
+    >
+        <ul class="space-y-1 font-body text-sm font-medium">
+            <li class="text-[10px] uppercase font-bold text-gray-500 tracking-wider px-3 py-1">Public Views</li>
+            {
+                publicItems.map((item) => (
+                    <li>
+                        <a href={item.href} class={`block px-3 py-2 rounded-lg text-sm transition-all ${getLinkClass(item.href)}`}>
+                            {item.linkText}
+                        </a>
+                    </li>
+                ))
+            }
+
+            <li class="text-[10px] uppercase font-bold text-gray-500 tracking-wider px-3 pt-3 pb-1 border-t border-white/5 mt-2">Management</li>
+            {
+                adminItems.map((item) => (
+                    <li>
+                        <a href={item.href} class={`block px-3 py-2 rounded-lg text-sm transition-all ${getLinkClass(item.href)}`}>
+                            {item.linkText}
+                        </a>
+                    </li>
+                ))
+            }
+
+            <li class="pt-2 mt-2 border-t border-white/5">
+                <a
+                    href="/api/admin/logout"
+                    class="block w-full text-left font-semibold text-sm text-red-400 hover:bg-red-500/5 px-3 py-2 rounded-lg transition-all"
+                >
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
 </nav>
+
+<script>
+    const toggleBtn = document.getElementById('admin-menu-toggle');
+    const mobileMenu = document.getElementById('admin-mobile-menu');
+
+    if (toggleBtn && mobileMenu) {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = !mobileMenu.classList.contains('invisible');
+
+            if (isOpen) {
+                mobileMenu.classList.add('opacity-0', 'invisible', 'scale-95');
+            } else {
+                mobileMenu.classList.remove('opacity-0', 'invisible', 'scale-95');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target as Node) && !toggleBtn.contains(e.target as Node)) {
+                mobileMenu.classList.add('opacity-0', 'invisible', 'scale-95');
+            }
+        });
+    }
+</script>

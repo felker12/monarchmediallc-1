@@ -1,7 +1,5 @@
 ---
 // src/pages/portfolio.astro
-export const prerender = true;
-
 import Layout from '@layouts/Layout.astro';
 import type { ProjectItem } from '@data/ProjectData';
 import ProjectCard from '@components/ProjectCard.astro';
@@ -51,7 +49,7 @@ try {
         }
 
         <div id="photo-gallery" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center justify-center">
-            {projects?.map((project) => <ProjectCard project={project} />)}
+            {projects?.map((project, index) => <ProjectCard project={project} loading={index === 0 ? 'eager' : 'lazy'} />)}
         </div>
     </div>
 </Layout>
@@ -62,7 +60,6 @@ try {
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: '#photo-gallery',
-        // Target ONLY the anchor links containing the lightbox class inside ProjectCard
         children: 'a.portfolio-lightbox-trigger',
         pswpModule: () => import('photoswipe')
     });

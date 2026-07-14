@@ -1,7 +1,10 @@
 ---
 // src/components/Header.astro
+import { Image } from 'astro:assets';
 import NavBar from '@components/NavBar.astro';
 import AdminNavBar from '@components/AdminNavBar.astro';
+
+import logoImage from '@assets/MonarchPurple.png';
 
 const currentPath = Astro.url.pathname;
 const isAdminRoute = currentPath.startsWith('/admin') && currentPath !== '/admin/login';
@@ -10,7 +13,7 @@ const isAdminRoute = currentPath.startsWith('/admin') && currentPath !== '/admin
 <header class="w-full max-w-7xl mx-auto px-4 relative z-20">
     <nav class="flex items-center justify-between py-2 border-b border-white/15">
         <a href="/" class="transition-transform duration-200 hover:scale-[1.05] flex items-center">
-            <img src="/images/MonarchPurple.png" alt="Monarch Media logo" class="w-15 mb-2 drop-shadow-2xl" />
+            <Image src={logoImage} alt="Monarch Media logo" width={60} height={60} class="w-15 mb-2 drop-shadow-2xl" loading="eager" />
         </a>
 
         {isAdminRoute ? <AdminNavBar /> : <NavBar />}

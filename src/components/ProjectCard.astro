@@ -1,12 +1,15 @@
 ---
 // src/components/ProjectCard.astro
+import { Image } from 'astro:assets';
 import type { ProjectItem } from '@data/ProjectData';
 
 interface Props {
     project: ProjectItem;
+    loading?: 'lazy' | 'eager';
 }
 
-const { project } = Astro.props;
+// Default loading to 'lazy' if not passed down
+const { project, loading = 'lazy' } = Astro.props;
 
 // Safely pull the publicUrl from the nested object returned by your Azure backend payload
 const imageUrl = project.siteImage?.publicUrl;
@@ -39,12 +42,13 @@ const imageAlt = project.title || 'Showcase Project Image';
                     rel="noreferrer"
                     class="portfolio-lightbox-trigger block w-full h-full cursor-zoom-in"
                 >
-                    <img
+                    <Image
                         src={imageUrl}
                         alt={imageAlt}
+                        width={640}
+                        height={360}
                         class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                        loading="lazy"
-                        decoding="async"
+                        loading={loading}
                     />
                 </a>
             ) : (
