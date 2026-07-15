@@ -1,8 +1,7 @@
-import type { Config, Context } from "@netlify/functions";
+import type { Config } from "@netlify/functions";
 
 export default async function handler(
-    _request: Request,
-    context: Context
+    _request: Request
 ): Promise<Response> {
     const apiUrl = process.env.KEEP_ALIVE_API_URL;
 
@@ -27,7 +26,8 @@ export default async function handler(
 
         if (!response.ok) {
             console.error(
-                `Database health check failed: ${response.status} ${responseBody}`
+                `Database health check failed: ${response.status}`,
+                responseBody
             );
 
             return new Response("Database health check failed.", {
@@ -36,11 +36,17 @@ export default async function handler(
         }
 
         console.log(
-            `Database health check succeeded at ${new Date().toISOString()}`
+            `Keep-alive succeeded (${response.status})`,
+            responseBody
         );
 
-        return new Response("Database health check succeeded.", {
-            status: 200,
+        return new Response(responseBody, {
+            status: response.status,
+            headers: {
+                "Content-Type":
+                    response.headers.get("Content-Type") ??
+                    "application/json",
+            },
         });
     } catch (error) {
         console.error("Database health check request failed.", error);
