@@ -57,7 +57,9 @@ const displayTitle = title ? `${title} | Monarch Media LLC` : 'Monarch Media LLC
         <div class="relative min-h-[100svh] w-full bg-cover bg-center bg-blend-hard-light">
             <Header />
 
-            <slot />
+            <main id="main-content">
+                <slot />
+            </main>
 
             <Footer />
         </div>

@@ -47,7 +47,7 @@ const parsedEditId = editTargetId ? Number.parseInt(editTargetId, 10) : null;
 const memberToEdit = parsedEditId !== null && Number.isInteger(parsedEditId) ? (team.find((member) => member.id === parsedEditId) ?? null) : null;
 ---
 
-<Layout title="Monarch Media | Manage Team">
+<Layout title="Manage Team">
     <main class="max-w-4xl mx-auto px-4 py-12 text-white space-y-12">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
