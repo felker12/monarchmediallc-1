@@ -10,6 +10,7 @@ interface Props {
 
 const { title } = Astro.props;
 const displayTitle = title ? `${title} | Monarch Media LLC` : 'Monarch Media LLC | Social Media, Marketing & Web Design';
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -22,7 +23,7 @@ const displayTitle = title ? `${title} | Monarch Media LLC` : 'Monarch Media LLC
             name="description"
             content="Stand out with bold web design, branding, and marketing services with Monarch Media LLC. Serving Terre Haute and the Wabash Valley."
         />
-        <link rel="canonical" href="https://monarchmediallc.com" />
+        <link rel="canonical" href={canonicalUrl} />
 
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://monarchmediallc.com" />

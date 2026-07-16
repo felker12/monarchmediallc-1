@@ -15,5 +15,7 @@ export default defineConfig({
 
     image: { 
         domains: ['epurfjikrqmjfjrdnuyy.supabase.co']
-    }
+    },
+
+    site: 'https://monarchmediallc.com'
 });
