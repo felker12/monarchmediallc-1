@@ -16,22 +16,6 @@ const displayTitle = title ? `${title} | Monarch Media LLC` : 'Monarch Media LLC
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <style>
-            body {
-                animation: fadeInAnimation ease 3s;
-                animation-iteration-count: 1;
-                animation-fill-mode: forwards;
-            }
-            @keyframes fadeInAnimation {
-                0% {
-                    opacity: 0;
-                }
-
-                100% {
-                    opacity: 1;
-                }
-            }
-        </style>
         <title>{displayTitle}</title>
         <meta name="title" content={displayTitle} />
         <meta
