@@ -1,4 +1,6 @@
 ---
+import { Icon } from 'astro-icon/components';
+
 const steps = [
     {
         title: 'Discovery',
@@ -39,7 +41,14 @@ const steps = [
                     <li class="group flex flex-col items-center md:flex-row md:items-start gap-4 md:gap-2">
                         {/* Step Circle & Description */}
                         <div class="flex flex-col items-center text-center w-[180px]">
-                            <div class="flex h-24 w-24 items-center justify-center rounded-full border-2 border-primary/40 bg-white/[0.025] transition-all duration-300 group-hover:-translate-y-1 group-hover:border-complementary group-hover:bg-primary/15 group-hover:shadow-[0_12px_28px_rgba(155,93,229,0.25)]">
+                            <div
+                                class="flex h-24 w-24 items-center justify-center 
+                                    rounded-full border-2 border-primary
+                                    bg-white/[0.025] transition-all duration-300 
+                                    group-hover:-translate-y-1 group-hover:border-complementary 
+                                    group-hover:bg-primary/15 
+                                    group-hover:shadow-[0_12px_28px_rgba(155,93,229,0.25)]"
+                            >
                                 <span class="font-body text-xs font-bold text-white tracking-wider">{step.title}</span>
                             </div>
                             <p class="mt-5 font-body text-xs leading-6 text-white/60 transition-colors duration-300 group-hover:text-white/80">
@@ -47,22 +56,16 @@ const steps = [
                             </p>
                         </div>
 
-                        {/* Responsive Connector Arrows (Flips horizontal on md+) */}
+                        {/* Responsive Connector Arrows */}
                         {index < steps.length - 1 && (
                             <div
                                 aria-hidden="true"
-                                class="flex items-center justify-center pt-2 md:pt-9 text-primary/45 transition-all duration-300 group-hover:text-complementary group-hover:translate-y-1 md:group-hover:translate-y-0 md:group-hover:translate-x-1 shrink-0"
+                                class="flex shrink-0 items-center justify-center pt-2 text-primary
+                                    transition-all duration-300
+                                    group-hover:translate-y-1 group-hover:text-complementary
+                                    md:pt-9 md:group-hover:translate-x-1 md:group-hover:translate-y-0"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="2.5"
-                                    stroke="currentColor"
-                                    class="h-6 w-6 rotate-90 md:rotate-0"
-                                >
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                                </svg>
+                                <Icon name="heroicons:arrow-right" class="h-6 w-6 rotate-90 md:rotate-0" />
                             </div>
                         )}
                     </li>

@@ -1,195 +1,212 @@
 ---
-// src/pages/admin/dashboard.astro
 import Layout from '@layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+
 export const prerender = false;
 
-// Authenticate session check
 if (!Astro.cookies.has('admin_token')) {
     return Astro.redirect('/admin/login');
 }
 
-// ----------------------------------------------------
-// FETCH GOATCOUNTER DATA (SERVER-SIDE)
-// ----------------------------------------------------
 const GOATCOUNTER_SUBDOMAIN = 'monarchmediallc';
 const BASE_URL = `https://${GOATCOUNTER_SUBDOMAIN}.goatcounter.com/counter//.json`;
 
-// Define a helper to securely fetch ranges
 async function fetchViews(params = '') {
     try {
         const response = await fetch(`${BASE_URL}${params}`);
-        if (!response.ok) return '0';
+
+        if (!response.ok) {
+            return '0';
+        }
+
         const data = await response.json();
+
         return data.count || '0';
-    } catch (e) {
+    } catch {
         return '—';
     }
 }
 
-// Fetch stats in parallel to maintain rapid page speeds
 const [viewsToday, viewsWeek, viewsMonth, viewsYear] = await Promise.all([
     fetchViews('?start=today'),
     fetchViews('?start=week'),
     fetchViews('?start=month'),
     fetchViews('?start=year')
 ]);
+
+type ManagementCard = {
+    href: string;
+    title: string;
+    description: string;
+    icon: string;
+    accent: keyof typeof accentClasses;
+    wide?: boolean;
+};
+
+const managementCards = [
+    {
+        href: '/admin/projects',
+        title: 'Project Portfolio',
+        description: 'Create, refine, or remove showcase project entries synced directly to your production portfolio pipeline.',
+        icon: 'heroicons:code-bracket-square',
+        accent: 'cyan'
+    },
+    {
+        href: '/admin/team',
+        title: 'Team Roster',
+        description: 'Update company team profiles, positions, and operational details displayed across public layout sections.',
+        icon: 'heroicons:user-group',
+        accent: 'purple'
+    },
+    {
+        href: '/admin/images',
+        title: 'Media Library',
+        description: 'Upload dynamic showcase images, manage descriptive alt data, and maintain global media asset links.',
+        icon: 'heroicons:photo',
+        accent: 'amber',
+        wide: true
+    }
+] satisfies readonly ManagementCard[];
+
+const accentClasses = {
+    cyan: {
+        card: 'hover:border-cyan-500/30',
+        icon: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400',
+        title: 'group-hover:text-cyan-400',
+        arrow: 'group-hover:text-cyan-400'
+    },
+    purple: {
+        card: 'hover:border-purple-500/40',
+        icon: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
+        title: 'group-hover:text-purple-400',
+        arrow: 'group-hover:text-purple-400'
+    },
+    amber: {
+        card: 'hover:border-amber-500/30',
+        icon: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
+        title: 'group-hover:text-amber-400',
+        arrow: 'group-hover:text-amber-400'
+    }
+} as const;
 ---
 
 <Layout title="Admin Dashboard">
-    <section class="max-w-5xl mx-auto px-4 py-12 text-white">
-        <div class="mb-10 space-y-2">
-            <h1 class="font-header text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+    <section class="mx-auto max-w-5xl px-4 py-12 text-white">
+        <header class="mb-10 space-y-2">
+            <h1
+                class="bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400
+                    bg-clip-text font-header text-3xl font-bold tracking-tight
+                    text-transparent"
+            >
                 System Control Panel
             </h1>
-            <p class="font-body text-sm text-gray-400 font-medium">Welcome back. Select an administrative node below to manage live platform datasets.</p>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <a
-                href="/admin/projects"
-                class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-cyan-500/30 hover:bg-white/[0.01] transition-all duration-300"
+            <p class="font-body text-sm font-medium text-gray-400">Welcome back. Select an administrative node below to manage live platform datasets.</p>
+        </header>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {
+                managementCards.map((card) => {
+                    const accent = accentClasses[card.accent];
+
+                    return (
+                        <a
+                            href={card.href}
+                            class:list={[
+                                `group block rounded-2xl border border-white/5
+                                bg-[#121214] p-6 shadow-xl
+                                transition-all duration-300
+                                hover:-translate-y-1 hover:bg-white/[0.01]`,
+                                accent.card,
+                                card.wide && 'md:col-span-2'
+                            ]}
+                        >
+                            <div class="flex items-start justify-between gap-5">
+                                <div class="space-y-4">
+                                    <div
+                                        class:list={[
+                                            `flex h-12 w-12 items-center justify-center
+                                            rounded-xl border
+                                            transition-transform duration-300
+                                            group-hover:scale-105`,
+                                            accent.icon
+                                        ]}
+                                    >
+                                        <Icon name={card.icon} class="h-6 w-6" />
+                                    </div>
+
+                                    <div class="space-y-1">
+                                        <h2
+                                            class:list={[
+                                                `font-body text-lg font-bold text-white
+                                                transition-colors`,
+                                                accent.title
+                                            ]}
+                                        >
+                                            {card.title}
+                                        </h2>
+
+                                        <p class="font-body text-xs leading-relaxed text-gray-400">{card.description}</p>
+                                    </div>
+                                </div>
+
+                                <Icon
+                                    name="heroicons:arrow-right"
+                                    class:list={[
+                                        `mt-1 h-5 w-5 shrink-0 text-gray-600
+                                        transition-all duration-300
+                                        group-hover:translate-x-1`,
+                                        accent.arrow
+                                    ]}
+                                />
+                            </div>
+                        </a>
+                    );
+                })
+            }
+
+            <section
+                class="group md:col-span-2 rounded-2xl border border-white/5
+                    bg-[#121214] p-6 shadow-xl
+                    transition-all duration-300
+                    hover:border-complementary/40"
             >
-                <div class="flex items-start justify-between">
+                <div class="mb-6 flex items-start justify-between gap-5">
                     <div class="space-y-4">
                         <div
-                            class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform"
+                            class="flex h-12 w-12 items-center justify-center
+                                rounded-xl border border-primary/30
+                                bg-primary/20 text-complementary
+                                transition-transform duration-300
+                                group-hover:scale-105"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
-                                ></path>
-                            </svg>
+                            <Icon name="heroicons:chart-bar-square" class="h-6 w-6" />
                         </div>
-                        <div class="space-y-1">
-                            <h2 class="font-body font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">Project Portfolio</h2>
-                            <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Create, refine, or remove showcase project entries synced directly to your production portfolio pipeline.
-                            </p>
-                        </div>
-                    </div>
-                    <span class="text-gray-600 group-hover:text-cyan-400 transition-colors pt-1">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="2"
-                            stroke="currentColor"
-                            class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-                        </svg>
-                    </span>
-                </div>
-            </a>
 
-            <a
-                href="/admin/team"
-                class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-purple-500/40 hover:bg-white/[0.01] transition-all duration-300"
-            >
-                <div class="flex items-start justify-between">
-                    <div class="space-y-4">
-                        <div
-                            class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-2.533-4.65l-2.21-.77a4.902 4.902 0 00-2.427 0l-2.21.77a4.124 4.124 0 00-2.533 4.65 9.338 9.338 0 004.122.952zM15 4.5a3 3 0 110 6 3 3 0 010-6zM3.651 19.02a11.956 11.956 0 014.244-.803l1.1-.38a4.903 4.903 0 011.02-.275 4.903 4.903 0 01-1.02-.275l-1.1-.38a11.956 11.956 0 01-4.244-.803A4.119 4.119 0 001.125 15V18a1.125 1.125 0 001.125 1.125h1.401zM11.25 7.5a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                                ></path>
-                            </svg>
-                        </div>
-                        <div class="space-y-1">
-                            <h2 class="font-body font-bold text-lg text-white group-hover:text-purple-400 transition-colors">Team Roster</h2>
-                            <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Update company team profiles, positions, and operational details displayed across public layout sections.
-                            </p>
-                        </div>
-                    </div>
-                    <span class="text-gray-600 group-hover:text-purple-400 transition-colors pt-1">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="2"
-                            stroke="currentColor"
-                            class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-                        </svg>
-                    </span>
-                </div>
-            </a>
-
-            <a
-                href="/admin/images"
-                class="group block bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-amber-500/30 hover:bg-white/[0.01] transition-all duration-300 md:col-span-2"
-            >
-                <div class="flex items-start justify-between">
-                    <div class="space-y-4">
-                        <div
-                            class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H2.25A1.5 1.5 0 00.75 6v12.75a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                                ></path>
-                            </svg>
-                        </div>
-                        <div class="space-y-1">
-                            <h2 class="font-body font-bold text-lg text-white group-hover:text-amber-400 transition-colors">Media Library</h2>
-                            <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Upload dynamic showcase images, manage descriptive alt data, and maintain global media assets links.
-                            </p>
-                        </div>
-                    </div>
-                    <span class="text-gray-600 group-hover:text-amber-400 transition-colors pt-1">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="2"
-                            stroke="currentColor"
-                            class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-                        </svg>
-                    </span>
-                </div>
-            </a>
-
-            <div
-                class="group md:col-span-2 bg-[#121214] border border-white/5 rounded-2xl p-6 shadow-xl hover:border-[var(--color-complementary)]/40 transition-all duration-300"
-            >
-                <div class="flex items-start justify-between mb-6">
-                    <div class="space-y-4">
-                        <div
-                            class="w-12 h-12 rounded-xl bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-complementary)] group-hover:scale-105 transition-transform"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
-                                ></path>
-                            </svg>
-                        </div>
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
-                                <h2 class="font-body font-bold text-lg text-white group-hover:text-[var(--color-complementary)] transition-colors">
+                                <h2
+                                    class="font-body text-lg font-bold text-white
+                                        transition-colors
+                                        group-hover:text-complementary"
+                                >
                                     Traffic & Analytics
                                 </h2>
+
                                 <span class="relative flex h-2 w-2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    <span
+                                        class="absolute inline-flex h-full w-full
+                                            animate-ping rounded-full
+                                            bg-emerald-400 opacity-75"
+                                    ></span>
+
+                                    <span class="relative inline-flex h-2 w-2
+                                            rounded-full bg-emerald-500"></span>
                                 </span>
                             </div>
-                            <p class="font-body text-xs text-gray-400 leading-relaxed">
-                                Live user interaction monitoring. Expand node to inspect traffic maps, channel click pathways, and platform statistics.
+
+                            <p class="font-body text-xs leading-relaxed text-gray-400">
+                                Live user interaction monitoring. Open the analytics dashboard to inspect traffic maps, click pathways, and platform statistics.
                             </p>
                         </div>
                     </div>
@@ -198,44 +215,51 @@ const [viewsToday, viewsWeek, viewsMonth, viewsYear] = await Promise.all([
                         href={`https://${GOATCOUNTER_SUBDOMAIN}.goatcounter.com`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="text-gray-600 hover:text-[var(--color-complementary)] transition-colors pt-1"
+                        aria-label="Open GoatCounter analytics"
+                        class="pt-1 text-gray-600 transition-colors
+                            hover:text-complementary"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="2"
-                            stroke="currentColor"
-                            class="w-5 h-5 transform hover:scale-110 transition-transform"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                            ></path>
-                        </svg>
+                        <Icon name="heroicons:arrow-top-right-on-square" class="h-5 w-5 transition-transform
+                                hover:scale-110" />
                     </a>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-white/[0.03]">
-                    <div class="bg-black/20 rounded-xl p-3 border border-white/5">
-                        <div class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 font-body">Today</div>
-                        <div class="text-xl font-bold font-body text-white mt-0.5">{viewsToday}</div>
+                <dl class="mt-4 grid grid-cols-2 gap-4
+                        border-t border-white/[0.03] pt-4
+                        sm:grid-cols-4">
+                    <div class="rounded-xl border border-white/5 bg-black/20 p-3">
+                        <dt class="font-body text-[10px] font-semibold uppercase tracking-wider text-gray-500">Today</dt>
+
+                        <dd class="mt-0.5 font-body text-xl font-bold text-white">
+                            {viewsToday}
+                        </dd>
                     </div>
-                    <div class="bg-black/20 rounded-xl p-3 border border-white/5">
-                        <div class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 font-body">This Week</div>
-                        <div class="text-xl font-bold font-body text-indigo-400 mt-0.5">{viewsWeek}</div>
+
+                    <div class="rounded-xl border border-white/5 bg-black/20 p-3">
+                        <dt class="font-body text-[10px] font-semibold uppercase tracking-wider text-gray-500">This Week</dt>
+
+                        <dd class="mt-0.5 font-body text-xl font-bold text-indigo-400">
+                            {viewsWeek}
+                        </dd>
                     </div>
-                    <div class="bg-black/20 rounded-xl p-3 border border-white/5">
-                        <div class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 font-body">This Month</div>
-                        <div class="text-xl font-bold font-body text-[var(--color-complementary)] mt-0.5">{viewsMonth}</div>
+
+                    <div class="rounded-xl border border-white/5 bg-black/20 p-3">
+                        <dt class="font-body text-[10px] font-semibold uppercase tracking-wider text-gray-500">This Month</dt>
+
+                        <dd class="mt-0.5 font-body text-xl font-bold text-complementary">
+                            {viewsMonth}
+                        </dd>
                     </div>
-                    <div class="bg-black/20 rounded-xl p-3 border border-white/5">
-                        <div class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 font-body">This Year</div>
-                        <div class="text-xl font-bold font-body text-cyan-400 mt-0.5">{viewsYear}</div>
+
+                    <div class="rounded-xl border border-white/5 bg-black/20 p-3">
+                        <dt class="font-body text-[10px] font-semibold uppercase tracking-wider text-gray-500">This Year</dt>
+
+                        <dd class="mt-0.5 font-body text-xl font-bold text-cyan-400">
+                            {viewsYear}
+                        </dd>
                     </div>
-                </div>
-            </div>
+                </dl>
+            </section>
         </div>
     </section>
 </Layout>
