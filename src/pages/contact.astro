@@ -3,19 +3,23 @@
 import Layout from '@layouts/Layout.astro';
 import ContactForm from '@components/ContactForm.astro';
 
-// Grab initial parameters if any to pass into our clean component
+export const prerender = false;
+
 const { searchParams } = Astro.url;
+
 const selectedService = searchParams.get('service') || '';
+const selectedPackage = searchParams.get('package') || '';
+const selectedCarePlan = searchParams.get('care') || '';
 ---
 
 <Layout title="Get in Touch">
-    <main class="relative isolate overflow-hidden min-h-screen">
-        {/* Subtle Ambient Background Glows */}
+    <main class="relative isolate min-h-screen overflow-hidden">
         <div
             aria-hidden="true"
             class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[45rem] bg-[radial-gradient(circle_at_top,rgba(69,26,107,0.3),transparent_65%)]"
         >
         </div>
+
         <div
             aria-hidden="true"
             class="pointer-events-none absolute right-[-10%] bottom-[10%] -z-10 h-[30rem] w-[30rem] bg-[radial-gradient(circle,rgba(136,69,124,0.1),transparent_70%)]"
@@ -23,37 +27,35 @@ const selectedService = searchParams.get('service') || '';
         </div>
 
         <div class="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                {/* LEFT COLUMN: The "Coming Soon" Announcement */}
-                <div class="lg:col-span-5 space-y-8 lg:sticky lg:top-24">
-                    {/* Glowing Capsule Badge */}
+            <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+                <div class="space-y-8 lg:sticky lg:top-24 lg:col-span-5">
                     <div class="inline-flex">
                         <span
-                            class="inline-flex items-center justify-center px-5 py-2 rounded-full border border-complementary/35 bg-[#0c0c0e]/80 backdrop-blur-md text-complementary text-[10px] font-bold uppercase tracking-[0.25em] shadow-[0_0_15px_rgba(136,69,124,0.15)]"
+                            class="inline-flex items-center justify-center rounded-full border border-complementary/35 bg-[#0c0c0e]/80 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-complementary shadow-[0_0_15px_rgba(136,69,124,0.15)] backdrop-blur-md"
                         >
                             Services Launching Soon
                         </span>
                     </div>
 
                     <header class="space-y-4">
-                        <h1 class="font-header text-5xl sm:text-6xl text-white leading-none">Secure your spot on the waitlist</h1>
-                        <p class="font-body text-base leading-relaxed text-white/60 max-w-md">
+                        <h1 class="font-header text-5xl leading-none text-white sm:text-6xl">Secure your spot on the waitlist</h1>
+
+                        <p class="max-w-md font-body text-base leading-relaxed text-white/60">
                             Monarch Media is preparing to open client onboarding soon. We build premium, high-performance web experiences tailored to scale your
                             brand.
                         </p>
-                        <p class="font-body text-sm leading-relaxed text-white/45 max-w-md">
+
+                        <p class="max-w-md font-body text-sm leading-relaxed text-white/45">
                             Submit an early-access inquiry below. We are reviewing incoming submissions to prioritize our initial design queue.
                         </p>
                     </header>
                 </div>
 
-                {/* RIGHT COLUMN: Early Inquiry Form Component */}
                 <div class="lg:col-span-7">
-                    <div class="rounded-3xl border border-white/10 bg-[#0c0c0e]/70 p-8 sm:p-10 backdrop-blur-md shadow-2xl relative">
-                        {/* Interactive Top Accent Line */}
-                        <div class="absolute top-0 left-1/12 right-1/12 h-[2px] bg-gradient-to-r from-transparent via-complementary/40 to-transparent"></div>
+                    <div class="relative rounded-3xl border border-white/10 bg-[#0c0c0e]/70 p-8 shadow-2xl backdrop-blur-md sm:p-10">
+                        <div class="absolute top-0 right-1/12 left-1/12 h-[2px] bg-gradient-to-r from-transparent via-complementary/40 to-transparent"></div>
 
-                        <ContactForm selectedService={selectedService} />
+                        <ContactForm selectedService={selectedService} selectedPackage={selectedPackage} selectedCarePlan={selectedCarePlan} />
                     </div>
                 </div>
             </div>
