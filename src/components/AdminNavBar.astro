@@ -18,7 +18,7 @@ const getLinkClass = (href: string) => {
 };
 ---
 
-<nav class="flex items-center gap-4 sm:gap-6 relative">
+<nav class="relative flex items-center gap-4 sm:gap-6">
     <!-- Desktop Navigation -->
     <ul class="hidden md:flex items-center gap-1 sm:gap-2 font-body text-sm font-medium tracking-wide">
         {
@@ -48,13 +48,13 @@ const getLinkClass = (href: string) => {
             </button>
 
             <div
-                class="absolute left-0 top-full mt-1 w-48
-                    bg-[#121214]/95 border border-white/5 rounded-xl
-                    shadow-2xl p-1.5 opacity-0 invisible
-                    group-hover:opacity-100 group-hover:visible
-                    transition-all duration-200 scale-95
-                    group-hover:scale-100 z-50 origin-top-left
-                    backdrop-blur-md"
+                class="absolute left-0 top-full z-50 mt-1 w-48
+                    origin-top-left rounded-xl
+                    border border-white/5 bg-[#121214]/95
+                    p-1.5 shadow-2xl backdrop-blur-md
+                    opacity-0 invisible scale-95
+                    transition-[opacity,transform,visibility] duration-200
+                    group-hover:opacity-100 group-hover:visible group-hover:scale-100"
             >
                 {
                     adminItems.map((item) => (
@@ -81,17 +81,18 @@ const getLinkClass = (href: string) => {
         </li>
     </ul>
 
-    <!-- Contact CTA -->
+    <!-- Desktop Contact CTA -->
     <div class="hidden md:block">
         <a
             href="/contact"
-            class={`relative inline-flex items-center justify-center font-body
-                text-xs font-bold uppercase tracking-[0.15em] px-5 py-2.5
-                rounded-xl border transition-all duration-300 group overflow-hidden
+            class={`relative inline-flex items-center justify-center overflow-hidden
+                rounded-xl border px-5 py-2.5
+                font-body text-xs font-bold uppercase tracking-[0.15em]
+                transition-all duration-300 group
                 ${
                     isContactActive
                         ? 'border-complementary bg-[#0c0c0e]/90 text-white shadow-[0_4px_25px_rgba(136,69,124,0.35)]'
-                        : 'border-white/10 bg-[#0c0c0e]/60 text-white/90 hover:border-complementary/50 hover:shadow-[0_4px_25px_rgba(136,69,124,0.25)] backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:text-white'
+                        : 'border-white/10 bg-[#0c0c0e]/60 text-white/90 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:border-complementary/50 hover:text-white hover:shadow-[0_4px_25px_rgba(136,69,124,0.25)]'
                 }`}
         >
             <span
@@ -105,8 +106,9 @@ const getLinkClass = (href: string) => {
                     }`}></span>
 
             <span
-                class={`absolute inset-0 bg-gradient-to-b
-                    from-primary/15 to-transparent transition-opacity duration-300
+                class={`absolute inset-0
+                    bg-gradient-to-b from-primary/15 to-transparent
+                    transition-opacity duration-300
                     ${isContactActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}></span>
 
             <span class="relative z-10"> Get in touch </span>
@@ -117,22 +119,43 @@ const getLinkClass = (href: string) => {
     <button
         id="admin-menu-toggle"
         type="button"
-        class="md:hidden p-2 text-gray-400 hover:text-white focus:outline-none transition-colors"
-        aria-label="Toggle menu"
+        class="relative md:hidden flex h-10 w-10 items-center justify-center
+            rounded-xl border border-transparent
+            text-gray-400
+            transition-all duration-200
+            hover:bg-white/5 hover:text-white
+            active:scale-95
+            focus-visible:outline-none focus-visible:ring-2
+            focus-visible:ring-complementary/60"
+        aria-label="Open menu"
         aria-controls="admin-mobile-menu"
         aria-expanded="false"
     >
-        <Icon name="heroicons:bars-3" class="w-6 h-6" />
+        <Icon
+            name="heroicons:bars-3"
+            class="menu-open-icon absolute h-6 w-6
+                opacity-100 rotate-0 scale-100
+                transition-[opacity,transform] duration-200"
+        />
+
+        <Icon
+            name="heroicons:x-mark"
+            class="menu-close-icon absolute h-6 w-6
+                opacity-0 -rotate-90 scale-75
+                transition-[opacity,transform] duration-200"
+        />
     </button>
 
     <!-- Mobile Menu -->
     <div
         id="admin-mobile-menu"
-        class="absolute right-0 top-full mt-2 w-52
-            bg-[#121214]/95 border border-white/5 rounded-xl
-            shadow-2xl p-2 opacity-0 invisible scale-95
-            transition-all duration-200 z-50 origin-top-right
-            backdrop-blur-md md:hidden"
+        class="absolute right-0 top-full z-50 mt-2 w-52
+            origin-top-right rounded-xl
+            border border-white/5 bg-[#121214]/95
+            p-2 shadow-2xl backdrop-blur-md
+            opacity-0 invisible scale-95
+            transition-[opacity,transform,visibility] duration-200
+            md:hidden"
     >
         <ul class="space-y-1 font-body text-sm font-medium">
             <li class="text-[10px] uppercase font-bold text-gray-500 tracking-wider px-3 py-1">Public Views</li>
@@ -140,7 +163,7 @@ const getLinkClass = (href: string) => {
             {
                 publicItems.map((item) => (
                     <li>
-                        <a href={item.href} class={`block px-3 py-2 rounded-lg text-sm transition-all ${getLinkClass(item.href)}`}>
+                        <a href={item.href} class={`mobile-nav-link block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${getLinkClass(item.href)}`}>
                             {item.linkText}
                         </a>
                     </li>
@@ -150,22 +173,27 @@ const getLinkClass = (href: string) => {
             <li class="pt-2 mt-2 border-t border-white/5">
                 <a
                     href="/contact"
-                    class={`relative block text-center font-body text-xs font-bold
-                        uppercase tracking-[0.12em] py-2.5 px-3 rounded-lg
-                        border transition-all duration-300 overflow-hidden group
+                    class={`mobile-nav-link relative block overflow-hidden
+                        rounded-lg border px-3 py-2.5 text-center
+                        font-body text-xs font-bold uppercase tracking-[0.12em]
+                        transition-all duration-300 group
                         ${
                             isContactActive
                                 ? 'border-complementary bg-[#0c0c0e] text-white shadow-[0_4px_15px_rgba(136,69,124,0.2)]'
-                                : 'border-white/10 bg-[#0c0c0e]/80 text-white/90'
+                                : 'border-white/10 bg-[#0c0c0e]/80 text-white/90 hover:border-complementary/40 hover:text-white'
                         }`}
                 >
                     <span
                         class={`absolute top-0 h-[1.5px]
                             bg-gradient-to-r from-transparent via-complementary to-transparent
                             transition-all duration-300
-                            ${isContactActive ? 'left-1 right-1 via-complementary' : 'left-4 right-4 via-complementary/60'}`}></span>
+                            ${
+                                isContactActive
+                                    ? 'left-1 right-1 via-complementary'
+                                    : 'left-4 right-4 via-complementary/60 group-hover:left-1 group-hover:right-1'
+                            }`}></span>
 
-                    Get in touch
+                    <span class="relative z-10"> Get in touch </span>
                 </a>
             </li>
 
@@ -174,7 +202,7 @@ const getLinkClass = (href: string) => {
             {
                 adminItems.map((item) => (
                     <li>
-                        <a href={item.href} class={`block px-3 py-2 rounded-lg text-sm transition-all ${getLinkClass(item.href)}`}>
+                        <a href={item.href} class={`mobile-nav-link block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${getLinkClass(item.href)}`}>
                             {item.linkText}
                         </a>
                     </li>
@@ -184,9 +212,11 @@ const getLinkClass = (href: string) => {
             <li class="pt-2 mt-2 border-t border-white/5">
                 <a
                     href="/api/admin/logout"
-                    class="flex items-center gap-2 w-full font-semibold text-sm
+                    class="mobile-nav-link flex items-center gap-2 w-full
+                        px-3 py-2 rounded-lg
+                        font-semibold text-sm
                         text-red-400 hover:text-red-300 hover:bg-red-500/5
-                        px-3 py-2 rounded-lg transition-all"
+                        transition-all duration-200"
                 >
                     <Icon name="heroicons:arrow-right-on-rectangle" class="w-4 h-4" />
 
@@ -202,6 +232,10 @@ const getLinkClass = (href: string) => {
 
     const mobileMenu = document.getElementById('admin-mobile-menu');
 
+    const openIcon = toggleButton?.querySelector('.menu-open-icon');
+
+    const closeIcon = toggleButton?.querySelector('.menu-close-icon');
+
     const setMobileMenuState = (isOpen: boolean) => {
         if (!toggleButton || !mobileMenu) {
             return;
@@ -209,18 +243,58 @@ const getLinkClass = (href: string) => {
 
         toggleButton.setAttribute('aria-expanded', String(isOpen));
 
+        toggleButton.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+
+        toggleButton.classList.toggle('bg-white/5', isOpen);
+
+        toggleButton.classList.toggle('border-white/10', isOpen);
+
+        toggleButton.classList.toggle('text-white', isOpen);
+
         mobileMenu.classList.toggle('opacity-0', !isOpen);
+
         mobileMenu.classList.toggle('invisible', !isOpen);
+
         mobileMenu.classList.toggle('scale-95', !isOpen);
+
+        openIcon?.classList.toggle('opacity-0', isOpen);
+
+        openIcon?.classList.toggle('rotate-180', isOpen);
+
+        openIcon?.classList.toggle('scale-75', isOpen);
+
+        openIcon?.classList.toggle('opacity-100', !isOpen);
+
+        openIcon?.classList.toggle('rotate-0', !isOpen);
+
+        openIcon?.classList.toggle('scale-100', !isOpen);
+
+        closeIcon?.classList.toggle('opacity-100', isOpen);
+
+        closeIcon?.classList.toggle('rotate-0', isOpen);
+
+        closeIcon?.classList.toggle('scale-100', isOpen);
+
+        closeIcon?.classList.toggle('opacity-0', !isOpen);
+
+        closeIcon?.classList.toggle('-rotate-90', !isOpen);
+
+        closeIcon?.classList.toggle('scale-75', !isOpen);
     };
 
     if (toggleButton && mobileMenu) {
         toggleButton.addEventListener('click', (event) => {
             event.stopPropagation();
 
-            const isCurrentlyOpen = toggleButton.getAttribute('aria-expanded') === 'true';
+            const isOpen = toggleButton.getAttribute('aria-expanded') === 'true';
 
-            setMobileMenuState(!isCurrentlyOpen);
+            setMobileMenuState(!isOpen);
+        });
+
+        mobileMenu.querySelectorAll('.mobile-nav-link').forEach((link) => {
+            link.addEventListener('click', () => {
+                setMobileMenuState(false);
+            });
         });
 
         document.addEventListener('click', (event) => {
@@ -236,7 +310,7 @@ const getLinkClass = (href: string) => {
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' && toggleButton.getAttribute('aria-expanded') === 'true') {
                 setMobileMenuState(false);
                 toggleButton.focus();
             }
