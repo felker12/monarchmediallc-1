@@ -1,20 +1,47 @@
 ---
 // src/components/admin/EditImageModal.astro
+import { Icon } from 'astro-icon/components';
+
+const ALT_TEXT_MAX_LENGTH = 250;
 ---
 
-<dialog id="edit-modal" class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-md p-4 focus:outline-none">
-    <section class="bg-[#121214] border border-white/10 rounded-2xl p-6 shadow-2xl text-white">
-        <h3 class="font-header text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent mb-5">Update Image Metadata</h3>
+<dialog id="edit-modal" class="w-full max-w-md bg-transparent p-4
+        backdrop:bg-black/60 backdrop:backdrop-blur-sm
+        focus:outline-none">
+    <section class="rounded-2xl border border-white/10
+            bg-[#121214] p-6 text-white shadow-2xl">
+        <header class="mb-5">
+            <h3 class="bg-gradient-to-r from-purple-400 to-indigo-400
+                    bg-clip-text font-header text-xl font-bold text-transparent">
+                Update Image Metadata
+            </h3>
+
+            <p id="edit-file-name" class="mt-1 truncate font-body text-xs text-white/45" title=""></p>
+        </header>
 
         <form id="edit-form" class="space-y-5">
             <input type="hidden" id="edit-image-id" name="id" />
 
-            <div class="aspect-video w-full bg-[#1a1a1e] rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
-                <img id="edit-preview-img" src="" alt="Thumbnail preview" class="w-full h-full object-contain" />
+            <!-- Image Preview -->
+            <div
+                class="relative flex aspect-video w-full items-center justify-center
+                    overflow-hidden rounded-xl border border-white/5
+                    bg-[#1a1a1e]"
+            >
+                <div id="edit-preview-placeholder" class="flex flex-col items-center gap-2
+                        font-body text-xs text-white/30">
+                    <Icon name="heroicons:photo" class="h-7 w-7" />
+
+                    <span>Image preview</span>
+                </div>
+
+                <img id="edit-preview-img" src="" alt="Selected image preview" loading="eager" decoding="async" class="hidden h-full w-full object-contain" />
             </div>
 
+            <!-- Alt Text -->
             <div>
-                <label for="edit-alt-input" class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">
+                <label for="edit-alt-input" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
                     Alt Text / Description
                 </label>
 
@@ -22,16 +49,37 @@
                     type="text"
                     id="edit-alt-input"
                     name="altText"
-                    placeholder="Describe this media for screen readers..."
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500/60 text-white font-body"
+                    maxlength={ALT_TEXT_MAX_LENGTH}
+                    placeholder="Describe what is shown in the image for accessibility."
+                    aria-describedby="edit-alt-guidance edit-alt-counter"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3
+                        font-body text-sm text-white
+                        transition-colors
+                        placeholder:text-white/25
+                        focus:border-purple-500/60 focus:outline-none"
                 />
+
+                <div class="mt-2 flex items-start justify-between gap-4
+                        font-body text-[11px] text-white/35">
+                    <p id="edit-alt-guidance" class="leading-4">Briefly describe the image’s meaningful visual content.</p>
+
+                    <span id="edit-alt-counter" class="shrink-0 tabular-nums" aria-live="polite">
+                        0 / {ALT_TEXT_MAX_LENGTH}
+                    </span>
+                </div>
             </div>
 
-            <div class="flex justify-end gap-3 pt-3 border-t border-white/5">
+            <!-- Actions -->
+            <div class="flex justify-end gap-3
+                    border-t border-white/5 pt-3">
                 <button
                     type="button"
                     id="close-edit-modal-btn"
-                    class="px-4 py-2.5 rounded-xl text-xs font-body font-semibold uppercase tracking-wider bg-white/5 hover:bg-white/10 transition-colors border border-white/5 cursor-pointer"
+                    class="cursor-pointer rounded-xl border border-white/5
+                        bg-white/5 px-4 py-2.5
+                        font-body text-xs font-semibold uppercase tracking-wider
+                        transition-colors hover:bg-white/10"
                 >
                     Cancel
                 </button>
@@ -39,30 +87,103 @@
                 <button
                     type="submit"
                     id="edit-submit-btn"
-                    class="px-5 py-2.5 rounded-xl text-xs font-body font-semibold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white transition-colors shadow-md cursor-pointer"
+                    class="inline-flex min-w-35 cursor-pointer
+                        items-center justify-center gap-2
+                        rounded-xl bg-indigo-600 px-5 py-2.5
+                        font-body text-xs font-semibold uppercase tracking-wider
+                        text-white shadow-md
+                        transition-colors hover:bg-indigo-500
+                        disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    Save Changes
+                    <Icon id="edit-submit-icon" name="heroicons:check" class="h-4 w-4" />
+
+                    <span id="edit-submit-text"> Save Changes </span>
                 </button>
             </div>
         </form>
     </section>
 </dialog>
 
-<script is:inline>
+<script is:inline define:vars={{ ALT_TEXT_MAX_LENGTH }}>
     {
         const editModal = document.getElementById('edit-modal');
 
         const editForm = document.getElementById('edit-form');
 
+        const editFileName = document.getElementById('edit-file-name');
+
         const editIdInput = document.getElementById('edit-image-id');
 
         const editAltInput = document.getElementById('edit-alt-input');
 
+        const editAltCounter = document.getElementById('edit-alt-counter');
+
         const editPreviewImage = document.getElementById('edit-preview-img');
+
+        const editPreviewPlaceholder = document.getElementById('edit-preview-placeholder');
 
         const closeEditButton = document.getElementById('close-edit-modal-btn');
 
         const editSubmitButton = document.getElementById('edit-submit-btn');
+
+        const editSubmitIcon = document.getElementById('edit-submit-icon');
+
+        const editSubmitText = document.getElementById('edit-submit-text');
+
+        const updateCharacterCounter = () => {
+            if (!(editAltInput instanceof HTMLInputElement) || !editAltCounter) {
+                return;
+            }
+
+            editAltCounter.textContent = `${editAltInput.value.length} / ${ALT_TEXT_MAX_LENGTH}`;
+        };
+
+        const setSubmittingState = (isSubmitting) => {
+            if (editSubmitButton instanceof HTMLButtonElement) {
+                editSubmitButton.disabled = isSubmitting;
+            }
+
+            if (editSubmitText) {
+                editSubmitText.textContent = isSubmitting ? 'Saving...' : 'Save Changes';
+            }
+
+            if (editSubmitIcon) {
+                editSubmitIcon.classList.toggle('animate-spin', isSubmitting);
+
+                editSubmitIcon.setAttribute('data-icon', isSubmitting ? 'heroicons:arrow-path' : 'heroicons:check');
+            }
+        };
+
+        const resetModal = () => {
+            if (editForm instanceof HTMLFormElement) {
+                editForm.reset();
+            }
+
+            if (editIdInput instanceof HTMLInputElement) {
+                editIdInput.value = '';
+            }
+
+            if (editFileName) {
+                editFileName.textContent = '';
+                editFileName.removeAttribute('title');
+            }
+
+            if (editPreviewImage instanceof HTMLImageElement) {
+                editPreviewImage.removeAttribute('src');
+                editPreviewImage.classList.add('hidden');
+            }
+
+            editPreviewPlaceholder?.classList.remove('hidden');
+
+            updateCharacterCounter();
+            setSubmittingState(false);
+        };
+
+        const closeModal = () => {
+            if (editModal instanceof HTMLDialogElement && editModal.open) {
+                editModal.close();
+            }
+        };
 
         document.addEventListener('click', (event) => {
             const target = event.target;
@@ -83,6 +204,13 @@
 
             const altText = editButton.dataset.editAlt ?? '';
 
+            const fileName = editButton.dataset.editFilename ?? '';
+
+            if (editFileName) {
+                editFileName.textContent = fileName;
+                editFileName.title = fileName;
+            }
+
             if (editIdInput instanceof HTMLInputElement) {
                 editIdInput.value = imageId;
             }
@@ -91,20 +219,47 @@
                 editAltInput.value = altText;
             }
 
-            if (editPreviewImage instanceof HTMLImageElement) {
+            updateCharacterCounter();
+
+            if (editPreviewImage instanceof HTMLImageElement && imageUrl) {
                 editPreviewImage.src = imageUrl;
+                editPreviewImage.alt = fileName ? `Preview of ${fileName}` : 'Selected image preview';
+
+                editPreviewImage.classList.remove('hidden');
+                editPreviewPlaceholder?.classList.add('hidden');
             }
 
             if (editModal instanceof HTMLDialogElement) {
                 editModal.showModal();
+
+                requestAnimationFrame(() => {
+                    if (editAltInput instanceof HTMLInputElement) {
+                        editAltInput.focus();
+                        editAltInput.select();
+                    }
+                });
             }
         });
 
-        closeEditButton?.addEventListener('click', () => {
-            if (editModal instanceof HTMLDialogElement) {
-                editModal.close();
+        editAltInput?.addEventListener('input', updateCharacterCounter);
+
+        closeEditButton?.addEventListener('click', closeModal);
+
+        /*
+         * Clicking the dialog backdrop makes the dialog itself
+         * the event target. Clicking the inner section does not.
+         */
+        editModal?.addEventListener('click', (event) => {
+            if (event.target === editModal) {
+                closeModal();
             }
         });
+
+        /*
+         * The native dialog fires close for the Cancel button,
+         * backdrop handler, Escape key, and direct close calls.
+         */
+        editModal?.addEventListener('close', resetModal);
 
         editForm?.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -120,10 +275,7 @@
                 return;
             }
 
-            if (editSubmitButton instanceof HTMLButtonElement) {
-                editSubmitButton.disabled = true;
-                editSubmitButton.textContent = 'Saving...';
-            }
+            setSubmittingState(true);
 
             try {
                 const response = await fetch(`/api/admin/images/${imageId}`, {
@@ -146,16 +298,11 @@
 
                         errorMessage = errorData.error ?? errorData.message ?? responseText;
                     } catch {
-                        // Preserve plain-text response.
+                        // Preserve a plain-text server response.
                     }
 
                     alert(errorMessage);
-
-                    if (editSubmitButton instanceof HTMLButtonElement) {
-                        editSubmitButton.disabled = false;
-
-                        editSubmitButton.textContent = 'Save Changes';
-                    }
+                    setSubmittingState(false);
 
                     return;
                 }
@@ -166,12 +313,10 @@
 
                 alert('Network error while updating image metadata.');
 
-                if (editSubmitButton instanceof HTMLButtonElement) {
-                    editSubmitButton.disabled = false;
-
-                    editSubmitButton.textContent = 'Save Changes';
-                }
+                setSubmittingState(false);
             }
         });
+
+        updateCharacterCounter();
     }
 </script>
