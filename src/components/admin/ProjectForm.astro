@@ -1,97 +1,165 @@
 ---
 // src/components/admin/ProjectForm.astro
 import { PACKAGE_LEVELS, INDUSTRY_SECTORS } from '@data/ProjectOptions';
+import type { ProjectItem } from '@data/ProjectData';
+import type { SiteImageItem } from '@data/ImageData';
 
 interface Props {
-    project?: any;
-    images: any[];
+    project?: ProjectItem | null;
+    images: SiteImageItem[];
 }
+
 const { project = null, images = [] } = Astro.props;
-const token = Astro.cookies.get('admin_token')?.value || '';
-const isEditing = !!project;
+
+const isEditing = project !== null;
 ---
 
-<dialog id="edit-project-modal" class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent w-full max-w-4xl p-4 focus:outline-none">
-    <section class="bg-[#121214] border border-white/10 rounded-2xl p-6 shadow-2xl text-white">
-        <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-3">
-            <h2 class="font-header text-xl font-bold bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+<dialog id="edit-project-modal" class="w-full max-w-4xl bg-transparent p-4
+        backdrop:bg-black/60 backdrop:backdrop-blur-sm
+        focus:outline-none">
+    <section class="rounded-2xl border border-white/10 bg-[#121214] p-6 text-white shadow-2xl">
+        <div class="mb-6 flex items-center justify-between border-b border-white/5 pb-3">
+            <h2
+                class="bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400
+                    bg-clip-text font-header text-xl font-bold text-transparent"
+            >
                 Edit Project: {project?.title}
             </h2>
+
             <button
                 type="button"
                 id="close-modal-btn"
-                class="text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 text-xs font-body font-medium"
+                class="rounded-lg border border-white/5 bg-white/5
+                    px-3 py-1.5 font-body text-xs font-medium text-gray-400
+                    transition-colors hover:bg-white/10 hover:text-white
+                    cursor-pointer"
             >
                 Close
             </button>
         </div>
 
-        <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form method="POST" action="/api/admin/projects" class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <input type="hidden" name="id" value={project?.id} />
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Project Title *</label>
+                <label
+                    for="edit-project-title"
+                    class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400"
+                >
+                    Project Title *
+                </label>
+
                 <input
+                    id="edit-project-title"
                     type="text"
                     name="title"
                     required
                     value={project?.title}
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 />
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Client Name</label>
+                <label for="edit-client-name" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Client Name
+                </label>
+
                 <input
+                    id="edit-client-name"
                     type="text"
                     name="clientName"
                     value={project?.clientName || ''}
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 />
             </div>
 
             <div class="md:col-span-2">
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Description *</label>
+                <label
+                    for="edit-project-description"
+                    class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400"
+                >
+                    Description *
+                </label>
+
                 <textarea
+                    id="edit-project-description"
                     name="description"
                     required
                     rows="3"
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors resize-none"
+                    class="w-full resize-none rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                     >{project?.description}</textarea
                 >
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Tech Stack</label>
+                <label for="edit-tech-stack" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Tech Stack
+                </label>
+
                 <input
+                    id="edit-tech-stack"
                     type="text"
                     name="techStack"
                     value={project?.techStack || ''}
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 />
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Live URL</label>
+                <label for="edit-live-url" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Live URL
+                </label>
+
                 <input
+                    id="edit-live-url"
                     type="url"
                     name="liveUrl"
                     value={project?.liveUrl || ''}
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 />
             </div>
 
             <div class="md:col-span-2">
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2"> Link Portfolio Image Asset </label>
+                <label for="edit-site-image" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Link Portfolio Image Asset
+                </label>
+
                 <select
+                    id="edit-site-image"
                     name="siteImageId"
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 >
-                    <option value="" selected={project?.siteImageId === null}>-- No Image / Decorative Only --</option>
+                    <option value="" selected={project?.siteImageId == null}> -- No Image / Decorative Only -- </option>
+
                     {
-                        images.map((img) => (
-                            <option value={img.id} selected={project?.siteImageId === img.id}>
-                                {img.fileName} {img.altText ? `(${img.altText})` : ''}
+                        images.map((image) => (
+                            <option value={image.id} selected={project?.siteImageId === image.id}>
+                                {image.fileName}
+                                {image.altText ? ` (${image.altText})` : ''}
                             </option>
                         ))
                     }
@@ -99,14 +167,22 @@ const isEditing = !!project;
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Service Package Tier</label>
+                <label for="edit-package" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Service Package Tier
+                </label>
+
                 <select
+                    id="edit-package"
                     name="package"
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 >
                     {
                         PACKAGE_LEVELS.map((level) => (
-                            <option value={level.value} selected={project?.package === level.value}>
+                            <option value={level.value} selected={project?.package.toLowerCase() === level.label.toLowerCase()}>
                                 {level.label}
                             </option>
                         ))
@@ -115,15 +191,23 @@ const isEditing = !!project;
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Industry Vertical</label>
+                <label for="edit-industry" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Industry Vertical
+                </label>
+
                 <select
+                    id="edit-industry"
                     name="industry"
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 >
                     {
-                        INDUSTRY_SECTORS.map((sec) => (
-                            <option value={sec.value} selected={project?.industry === sec.value}>
-                                {sec.label}
+                        INDUSTRY_SECTORS.map((sector) => (
+                            <option value={sector.value} selected={project?.industry.toLowerCase() === sector.label.toLowerCase()}>
+                                {sector.label}
                             </option>
                         ))
                     }
@@ -131,53 +215,84 @@ const isEditing = !!project;
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Display Sort Order</label>
+                <label
+                    for="edit-display-order"
+                    class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400"
+                >
+                    Display Sort Order
+                </label>
+
                 <input
+                    id="edit-display-order"
                     type="number"
                     name="displayOrder"
-                    value={project?.displayOrder || 0}
+                    value={project?.displayOrder ?? 0}
                     min="0"
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 />
             </div>
 
             <div>
-                <label class="block text-gray-400 font-body text-xs font-semibold uppercase tracking-wider mb-2">Completion Date</label>
+                <label for="edit-completed-on" class="mb-2 block font-body text-xs font-semibold
+                        uppercase tracking-wider text-gray-400">
+                    Completion Date
+                </label>
+
                 <input
+                    id="edit-completed-on"
                     type="date"
                     name="completedOn"
                     value={project?.completedOn || ''}
-                    class="w-full bg-[#1a1a1e] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500/60 transition-colors"
+                    class="w-full rounded-xl border border-white/5
+                        bg-[#1a1a1e] px-4 py-3 text-sm text-white
+                        transition-colors focus:border-purple-500/60
+                        focus:outline-none"
                 />
             </div>
 
             <div class="flex items-center gap-8 py-2">
-                <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
+                <label class="flex cursor-pointer items-center gap-2 font-body text-sm text-gray-300">
                     <input
                         type="checkbox"
                         name="featured"
                         value="true"
                         checked={project?.featured}
-                        class="rounded border-white/15 bg-[#1a1a1e] text-purple-500 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                        class="rounded border-white/15 bg-[#1a1a1e]
+                            text-purple-500 focus:outline-none
+                            focus:ring-0 focus:ring-offset-0"
                     />
+
                     Featured Item
                 </label>
-                <label class="flex items-center gap-2 cursor-pointer font-body text-sm text-gray-300">
+
+                <label class="flex cursor-pointer items-center gap-2 font-body text-sm text-gray-300">
                     <input
                         type="checkbox"
                         name="isPublic"
                         value="true"
-                        checked={project ? project.isPublic : true}
-                        class="rounded border-white/15 bg-[#1a1a1e] text-purple-500 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                        checked={project?.isPublic ?? true}
+                        class="rounded border-white/15 bg-[#1a1a1e]
+                            text-purple-500 focus:outline-none
+                            focus:ring-0 focus:ring-offset-0"
                     />
+
                     Publicly Visible
                 </label>
             </div>
 
-            <div class="flex justify-end items-center md:col-span-2 pt-4">
+            <div class="flex items-center justify-end pt-4 md:col-span-2">
                 <button
                     type="submit"
-                    class="font-body font-semibold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all shadow-md active:scale-[0.99] text-white bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-500 hover:opacity-95"
+                    class="rounded-xl bg-gradient-to-r
+                        from-purple-500 via-indigo-500 to-cyan-500
+                        px-6 py-3.5 font-body text-xs font-semibold
+                        uppercase tracking-wider text-white shadow-md
+                        transition-all hover:opacity-95
+                        active:scale-[0.99] cursor-pointer"
                 >
                     Update Project Details
                 </button>
@@ -186,44 +301,51 @@ const isEditing = !!project;
     </section>
 </dialog>
 
-<script is:inline define:vars={{ isEditing, token }}>
+<script is:inline define:vars={{ isEditing }}>
     const dialog = document.getElementById('edit-project-modal');
-    const closeBtn = document.getElementById('close-modal-btn');
+
+    const closeButton = document.getElementById('close-modal-btn');
+
     const editForm = dialog?.querySelector('form');
 
-    if (isEditing && dialog) {
+    if (isEditing && dialog instanceof HTMLDialogElement) {
         dialog.showModal();
     }
 
-    // Intercept form submission to prevent cookie dropouts
-    editForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    editForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-        // Convert FormData directly to a clean JSON object for the endpoint payload
+        if (!(editForm instanceof HTMLFormElement)) {
+            return;
+        }
+
         const formData = new FormData(editForm);
         const data = {};
 
         formData.forEach((value, key) => {
-            // Convert checkboxes to pure booleans
             if (key === 'featured' || key === 'isPublic') {
                 data[key] = value === 'true';
             } else if (key === 'siteImageId') {
-                data[key] = value ? parseInt(value, 10) : null;
+                data[key] = value ? Number.parseInt(String(value), 10) : null;
             } else if (key === 'displayOrder' || key === 'id') {
-                data[key] = parseInt(value, 10);
+                data[key] = Number.parseInt(String(value), 10);
             } else if (key === 'package' || key === 'industry') {
-                data[key] = parseInt(value, 10);
+                data[key] = Number.parseInt(String(value), 10);
             } else {
                 data[key] = value;
             }
         });
 
-        // Ensure missing checkboxes default explicitly to false
-        if (!data.hasOwnProperty('featured')) data['featured'] = false;
-        if (!data.hasOwnProperty('isPublic')) data['isPublic'] = false;
+        if (!Object.hasOwn(data, 'featured')) {
+            data.featured = false;
+        }
+
+        if (!Object.hasOwn(data, 'isPublic')) {
+            data.isPublic = false;
+        }
 
         try {
-            const res = await fetch(editForm.action, {
+            const response = await fetch(editForm.action, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -231,24 +353,29 @@ const isEditing = !!project;
                 body: JSON.stringify(data)
             });
 
-            if (res.ok) {
-                // Clear out search parameters and reload smoothly
-                const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?success=Project+updated+successfully!';
-                window.location.href = cleanUrl;
-            } else {
-                const errData = await res.json().catch(() => ({}));
-                alert('Update failed: ' + (errData.error || 'Server processing error'));
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+
+                alert('Update failed: ' + (errorData.error || 'Server processing error'));
+
+                return;
             }
-        } catch (err) {
-            alert('Network error encountered trying to update project details.');
+
+            window.location.href = `${window.location.pathname}` + '?success=Project+updated+successfully!';
+        } catch (error) {
+            console.error('Project update failed:', error);
+
+            alert('Network error encountered while trying to update the project.');
         }
     });
 
-    closeBtn?.addEventListener('click', () => {
-        if (dialog) {
-            dialog.close();
-            const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-            window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+    closeButton?.addEventListener('click', () => {
+        if (!(dialog instanceof HTMLDialogElement)) {
+            return;
         }
+
+        dialog.close();
+
+        window.history.replaceState({}, '', window.location.pathname);
     });
 </script>
