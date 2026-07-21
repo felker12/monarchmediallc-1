@@ -1,64 +1,79 @@
 ---
 import '@styles/globals.css';
 import '@fontsource-variable/inter/wght.css';
+
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 
 interface Props {
     title?: string;
+    description?: string;
+    image?: string;
+    imageAlt?: string;
+    noIndex?: boolean;
 }
 
-const { title } = Astro.props;
-const displayTitle = title ? `${title} | Monarch Media LLC` : 'Monarch Media LLC | Social Media, Marketing & Web Design';
+const {
+    title,
+    description = 'Custom website development, web design, branding, and digital marketing for businesses in Terre Haute and the Wabash Valley.',
+    image = '/images/ogbanner.png',
+    imageAlt = 'Monarch Media LLC website development, design, and marketing services',
+    noIndex = false
+} = Astro.props;
+
+const displayTitle = title ? `${title} | Monarch Media LLC` : 'Website Development, Design & Marketing | Monarch Media LLC';
+
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const socialImageUrl = new URL(image, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
     <head>
         <meta charset="UTF-8" />
-        <title>{displayTitle}</title>
-        <meta name="title" content={displayTitle} />
-        <meta
-            name="description"
-            content="Stand out with bold web design, branding, and marketing services with Monarch Media LLC. Serving Terre Haute and the Wabash Valley."
-        />
-        <link rel="canonical" href={canonicalUrl} />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://monarchmediallc.com" />
-        <meta property="og:title" content={displayTitle} />
-        <meta
-            property="og:description"
-            content="Stand out with bold web design, branding, and marketing services with Monarch Media LLC. Serving Terre Haute and the Wabash Valley."
-        />
-        <meta property="og:image" content="/images/ogbanner.png" />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://monarchmediallc.com" />
-        <meta property="twitter:title" content={displayTitle} />
-        <meta
-            property="twitter:description"
-            content="Stand out with bold web design, branding, and marketing services with Monarch Media LLC. Serving Terre Haute and the Wabash Valley."
-        />
-        <meta property="twitter:image" content="/images/ogbanner.png" />
-        <meta
-            name="keywords"
-            content="marketing, web design, web designer, website design, website designer, social media, terre haute, marketing terre haute, web design terre haute, social media terre haute, branding, custom websites"
-        />
-        <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+        <title>{displayTitle}</title>
+        <meta name="description" content={description} />
+        <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow'} />
+        <meta name="theme-color" content="#12051f" />
         <meta name="generator" content={Astro.generator} />
+
+        <link rel="canonical" href={canonicalUrl} />
         <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
 
-        <script is:inline data-goatcounter="https://monarchmediallc.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:site_name" content="Monarch Media LLC" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={displayTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={socialImageUrl} />
+        <meta property="og:image:alt" content={imageAlt} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={displayTitle} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={socialImageUrl} />
+        <meta name="twitter:image:alt" content={imageAlt} />
+
+        <script is:inline data-goatcounter="https://monarchmediallc.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
     </head>
 
     <body class="antialiased text-white entry-fade-in">
-        <div class="relative min-h-[100svh] w-full bg-cover bg-center bg-blend-hard-light">
+        <a
+            href="#main-content"
+            class="fixed top-4 left-4 z-[100] -translate-y-24 rounded-md bg-white px-4 py-2 font-semibold text-black transition-transform focus:translate-y-0"
+        >
+            Skip to main content
+        </a>
+
+        <div class="relative flex min-h-[100svh] w-full flex-col bg-cover bg-center bg-blend-hard-light">
             <Header />
 
-            <main id="main-content">
+            <main id="main-content" class="flex-1">
                 <slot />
             </main>
 

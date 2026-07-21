@@ -4,11 +4,15 @@ import ComingSoon from '@components/ComingSoon.astro';
 import MeetTheTeam from '@components/MeetTheTeam.astro';
 ---
 
-<Layout title="Coming Soon!">
+<Layout
+    title="Website Development, Design & Marketing"
+    description="Monarch Media LLC provides custom website development, web design, branding, and digital marketing services for businesses in Terre Haute and the Wabash Valley."
+    image="/images/ogbanner.png"
+    imageAlt="Monarch Media LLC website development, design, branding, and marketing"
+>
     <ComingSoon />
 
-    <div class="px-4 relative z-10">
-        <!-- <h2 class="font-decorative pt-0 pb-8 text-center text-[#e8cf7c] text-4xl">We're #SocialButterflies</h2> -->
+    <div class="relative z-10 px-4">
         <MeetTheTeam />
     </div>
 </Layout>
