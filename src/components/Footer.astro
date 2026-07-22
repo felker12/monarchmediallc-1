@@ -9,13 +9,21 @@ import inlineLogo from '@assets/Monarch-inline-whtcol.png';
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="border-t border-white/5 px-6 pt-16 text-center">
+<footer class="border-t border-white/5 px-6 pt-8 text-center">
     <div class="font-body text-sm text-white/60">
         <p class="font-semibold text-white">Monarch Media LLC</p>
 
         <address class="not-italic">
-            <p>3601 N. Fruitridge Avenue</p>
-            <p>Terre Haute, IN 47805</p>
+            <a
+                href="https://www.google.com/maps/search/?api=1&query=3601+N+Fruitridge+Avenue+Terre+Haute+IN+47805"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Monarch Media LLC at 3601 North Fruitridge Avenue in Google Maps"
+                class="inline-block transition-colors hover:text-white hover:underline"
+            >
+                <span class="block">3601 N. Fruitridge Avenue</span>
+                <span class="block">Terre Haute, IN 47805</span>
+            </a>
         </address>
     </div>
 
@@ -46,15 +54,15 @@ const currentYear = new Date().getFullYear();
             </ul>
         </nav>
 
-        <nav aria-label="Administrative navigation" class="mt-5">
+        <nav aria-label="Administrative navigation" class="mt-4">
             <a href="/admin/login" class="font-body text-xs text-white/20 transition-colors hover:text-white/50"> Admin </a>
         </nav>
 
-        <div class="mt-8 font-body text-sm text-white/35">
+        <div class="mt-4 font-body text-sm text-white/35">
             Copyright © {currentYear} Monarch Media LLC. All rights reserved.
         </div>
 
-        <p id="mmSitetag" class="mt-4 flex items-center justify-center font-body text-sm text-white/55">
+        <p id="mmSitetag" class="mt-4 mb-4 flex items-center justify-center font-body text-sm text-white/55">
             Website by
 
             <Image src={inlineLogo} alt="Monarch Media LLC" class="inline-block h-5 w-auto px-2 drop-shadow-sm" loading="lazy" />
