@@ -1,38 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components';
-
+import { socialLinks } from '@data/SocialData';
 import logo from '@assets/MonarchPurple.png';
-
-const socialLinks = [
-    {
-        label: "Visit Monarch Media LLC's Facebook",
-        title: 'Visit Facebook',
-        href: 'https://www.facebook.com/61576070392012/',
-        icon: 'mdi:facebook'
-    },
-    {
-        label: "Visit Monarch Media LLC's Instagram",
-        title: 'Visit Instagram',
-        href: 'https://www.instagram.com/monarchmedia.llc',
-        icon: 'mdi:instagram'
-    },
-    {
-        label: 'Email Monarch Media LLC',
-        title: 'Email Us',
-        href: 'mailto:info@monarchmediallc.com',
-        icon: 'mdi:email-outline'
-    },
-    {
-        label: 'Call Monarch Media LLC',
-        title: 'Call Us',
-        href: 'tel:8122432759',
-        icon: 'mdi:phone-outline'
-    }
-] as const;
 ---
 
-<div class="relative flex min-h-[70svh] select-none flex-col items-center justify-center px-4 pb-4">
+<div class="relative flex flex-col items-center justify-center px-4 pb-4 max-w-7xl mx-auto min-h-svh">
     <div
         id="purpleblob"
         aria-hidden="true"
@@ -45,24 +18,49 @@ const socialLinks = [
     <Image src={logo} alt="Monarch Media logo" class="z-10 mb-2 w-48 drop-shadow-2xl" />
 
     <h1
-        class="z-10 pb-2 bg-gradient-to-b from-white to-gray-400 bg-clip-text
-            text-center font-header text-5xl font-bold tracking-tight
-            text-transparent md:text-7xl lg:text-8xl"
+        class="z-10 bg-gradient-to-b from-white to-gray-400 bg-clip-text
+                pb-4 text-center font-header text-4xl font-bold tracking-tight
+                text-transparent sm:text-5xl lg:text-6xl xl:text-7xl"
     >
-        Coming Soon
+        Web Design & Digital Marketing in Terre Haute
     </h1>
 
-    <p id="services" class="z-10 pb-8 text-center font-body text-sm font-semibold uppercase
+    <section id="services" aria-labelledby="services-heading" class="z-10 pb-8 text-center">
+        <h2 id="services-heading" class="sr-only">Our Creative and Digital Services</h2>
+
+        <p class="font-body text-sm font-semibold uppercase
             tracking-[0.2em] text-gray-400 md:text-base">
-        Social Media
-        <span class="text-primary">|</span>
-        Marketing
-        <span class="text-primary">|</span>
-        Web Design
-    </p>
+            Social Media
+            <span aria-hidden="true" class="text-complementary">|</span>
+            Branding
+            <span aria-hidden="true" class="text-complementary">|</span>
+            Web Design
+        </p>
+    </section>
 
     <p class="z-10 max-w-xl pb-8 text-center font-body text-base leading-relaxed
-            text-gray-300 md:text-lg">Metamorphosis in progress.</p>
+            text-gray-300 md:text-lg">
+        Metamorphosis in progress. Our full website is coming soon.
+    </p>
+
+    <p class="z-10 max-w-2xl pb-8 text-center font-body text-base
+        leading-relaxed text-gray-300 md:text-lg">
+        Monarch Media LLC helps businesses in Terre Haute and throughout the Wabash Valley build stronger brands through custom websites, graphic design, social
+        media, and digital marketing.
+    </p>
+
+    <div class="z-10 mb-8 flex flex-wrap justify-center gap-4">
+        <a href="/contact" class="rounded-lg bg-primary px-6 py-3 font-semibold text-white
+            transition hover:bg-primary/80"> Start a Project </a>
+
+        <a
+            href="/web-development"
+            class="rounded-lg border border-white/20 px-6 py-3 font-semibold
+            text-white transition hover:border-primary/60 hover:bg-white/5"
+        >
+            View Website Packages
+        </a>
+    </div>
 
     <div class="z-10 flex items-center gap-6">
         {
@@ -75,7 +73,7 @@ const socialLinks = [
                         aria-label={link.label}
                         title={link.title}
                         target={isExternal ? '_blank' : undefined}
-                        rel={isExternal ? 'noreferrer' : undefined}
+                        rel={isExternal ? 'noopener noreferrer' : undefined}
                         class="flex h-10 w-10 items-center justify-center rounded-full
                             border border-white/10 bg-white/[0.025] text-gray-400
                             transition-all duration-200

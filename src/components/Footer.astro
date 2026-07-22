@@ -3,40 +3,22 @@
 
 import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components';
-
+import { socialLinks } from '@data/SocialData';
 import inlineLogo from '@assets/Monarch-inline-whtcol.png';
 
 const currentYear = new Date().getFullYear();
-
-const socialLinks = [
-    {
-        label: 'Visit Monarch Media LLC on Facebook',
-        title: 'Facebook',
-        href: 'https://www.facebook.com/61576070392012/',
-        icon: 'mdi:facebook'
-    },
-    {
-        label: 'Visit Monarch Media LLC on Instagram',
-        title: 'Instagram',
-        href: 'https://www.instagram.com/monarchmedia.llc',
-        icon: 'mdi:instagram'
-    },
-    {
-        label: 'Email Monarch Media LLC',
-        title: 'Email',
-        href: '/contact',
-        icon: 'mdi:email-outline'
-    },
-    {
-        label: 'Call Monarch Media LLC',
-        title: 'Call',
-        href: 'tel:8122432759',
-        icon: 'mdi:phone-outline'
-    }
-] as const;
 ---
 
-<footer class="border-t border-white/5 px-6 pb-12 pt-16 text-center sm:pb-16 sm:pt-24">
+<footer class="border-t border-white/5 px-6 pt-16 text-center">
+    <div class="font-body text-sm text-white/60">
+        <p class="font-semibold text-white">Monarch Media LLC</p>
+
+        <address class="not-italic">
+            <p>3601 N. Fruitridge Avenue</p>
+            <p>Terre Haute, IN 47805</p>
+        </address>
+    </div>
+
     <div class="mx-auto flex max-w-7xl flex-col items-center">
         <div class="mt-7 flex items-center justify-center gap-5">
             {
@@ -46,7 +28,7 @@ const socialLinks = [
                         aria-label={link.label}
                         title={link.title}
                         target={link.href.startsWith('http') ? '_blank' : undefined}
-                        rel={link.href.startsWith('http') ? 'noreferrer' : undefined}
+                        rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.025] text-white/45 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:bg-primary/15 hover:text-white"
                     >
                         <Icon name={link.icon} class="h-5 w-5" aria-hidden="true" />
@@ -54,6 +36,19 @@ const socialLinks = [
                 ))
             }
         </div>
+
+        <nav aria-label="Footer navigation" class="mt-8">
+            <ul class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-white/55">
+                <li><a href="/web-development" class="hover:text-white">Web Development</a></li>
+                <li><a href="/care-plans" class="hover:text-white">Care Plans</a></li>
+                <li><a href="/portfolio" class="hover:text-white">Portfolio</a></li>
+                <li><a href="/contact" class="hover:text-white">Contact</a></li>
+            </ul>
+        </nav>
+
+        <nav aria-label="Administrative navigation" class="mt-5">
+            <a href="/admin/login" class="font-body text-xs text-white/20 transition-colors hover:text-white/50"> Admin </a>
+        </nav>
 
         <div class="mt-8 font-body text-sm text-white/35">
             Copyright © {currentYear} Monarch Media LLC. All rights reserved.
@@ -64,9 +59,5 @@ const socialLinks = [
 
             <Image src={inlineLogo} alt="Monarch Media LLC" class="inline-block h-5 w-auto px-2 drop-shadow-sm" loading="lazy" />
         </p>
-
-        <nav aria-label="Administrative navigation" class="mt-5">
-            <a href="/admin/login" class="font-body text-xs text-white/20 transition-colors hover:text-white/50"> Admin </a>
-        </nav>
     </div>
 </footer>

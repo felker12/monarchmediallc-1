@@ -10,21 +10,72 @@ interface Props {
     description?: string;
     image?: string;
     imageAlt?: string;
+    imageType?: string;
     noIndex?: boolean;
 }
 
 const {
     title,
-    description = 'Custom website development, web design, branding, and digital marketing for businesses in Terre Haute and the Wabash Valley.',
+    description = 'Custom web design, website development, branding, and digital marketing for businesses in Terre Haute, Indiana and throughout the Wabash Valley.',
     image = '/images/ogbanner.png',
-    imageAlt = 'Monarch Media LLC website development, design, and marketing services',
+    imageAlt = 'Monarch Media LLC web design, development, branding, and marketing services',
+    imageType = 'image/png',
     noIndex = false
 } = Astro.props;
 
-const displayTitle = title ? `${title} | Monarch Media LLC` : 'Website Development, Design & Marketing | Monarch Media LLC';
+const siteUrl = Astro.site ?? new URL('https://monarchmediallc.com');
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const socialImageUrl = new URL(image, Astro.site);
+const displayTitle = title ? `${title} | Monarch Media LLC` : 'Terre Haute Web Design & Development | Monarch Media LLC';
+
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const socialImageUrl = new URL(image, siteUrl).toString();
+const defaultSocialImageUrl = new URL('/images/ogbanner.png', siteUrl).toString();
+const logoUrl = new URL('/images/MonarchPurple.png', siteUrl).toString();
+
+const isPrivateRoute = Astro.url.pathname.startsWith('/admin');
+const shouldIndex = !noIndex && !isPrivateRoute;
+
+const localBusinessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${siteUrl.toString()}#localbusiness`,
+    name: 'Monarch Media LLC',
+    url: siteUrl.toString(),
+    logo: logoUrl,
+    image: defaultSocialImageUrl,
+    description:
+        'Monarch Media LLC provides custom web design, website development, branding, graphic design, and digital marketing services to businesses in Terre Haute and throughout the Wabash Valley.',
+    email: 'info@monarchmediallc.com',
+    address: {
+        '@type': 'PostalAddress',
+        streetAddress: '3601 N Fruitridge Avenue',
+        addressLocality: 'Terre Haute',
+        addressRegion: 'IN',
+        postalCode: '47805',
+        addressCountry: 'US'
+    },
+    geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 39.506894,
+        longitude: -87.359236
+    },
+    areaServed: [
+        {
+            '@type': 'City',
+            name: 'Terre Haute',
+            containedInPlace: {
+                '@type': 'State',
+                name: 'Indiana'
+            }
+        },
+        {
+            '@type': 'AdministrativeArea',
+            name: 'Wabash Valley'
+        }
+    ],
+    knowsAbout: ['Web Design', 'Website Development', 'Branding', 'Graphic Design', 'Digital Marketing', 'Search Engine Optimization'],
+    sameAs: ['https://www.instagram.com/monarchmediallc', 'https://www.facebook.com/profile.php?id=61576070392012']
+};
 ---
 
 <!doctype html>
@@ -35,11 +86,12 @@ const socialImageUrl = new URL(image, Astro.site);
 
         <title>{displayTitle}</title>
         <meta name="description" content={description} />
-        <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow'} />
+        <meta name="robots" content={shouldIndex ? 'index, follow' : 'noindex, nofollow'} />
         <meta name="theme-color" content="#12051f" />
         <meta name="generator" content={Astro.generator} />
 
         <link rel="canonical" href={canonicalUrl} />
+        <link rel="sitemap" href="/sitemap-index.xml" />
         <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
 
         <meta property="og:type" content="website" />
@@ -49,6 +101,7 @@ const socialImageUrl = new URL(image, Astro.site);
         <meta property="og:title" content={displayTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={socialImageUrl} />
+        <meta property="og:image:type" content={imageType} />
         <meta property="og:image:alt" content={imageAlt} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
@@ -59,13 +112,15 @@ const socialImageUrl = new URL(image, Astro.site);
         <meta name="twitter:image" content={socialImageUrl} />
         <meta name="twitter:image:alt" content={imageAlt} />
 
+        {shouldIndex && <script is:inline type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />}
+
         <script is:inline data-goatcounter="https://monarchmediallc.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
     </head>
 
     <body class="antialiased text-white entry-fade-in">
         <a
             href="#main-content"
-            class="fixed top-4 left-4 z-[100] -translate-y-24 rounded-md bg-white px-4 py-2 font-semibold text-black transition-transform focus:translate-y-0"
+            class="fixed left-4 top-4 z-[100] -translate-y-[200%] rounded-md bg-white px-4 py-2 font-semibold text-black shadow-lg transition-transform focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#e8cf7c] focus:ring-offset-2 focus:ring-offset-[#12051f]"
         >
             Skip to main content
         </a>
@@ -73,7 +128,7 @@ const socialImageUrl = new URL(image, Astro.site);
         <div class="relative flex min-h-[100svh] w-full flex-col bg-cover bg-center bg-blend-hard-light">
             <Header />
 
-            <main id="main-content" class="flex-1">
+            <main id="main-content" tabindex="-1" class="flex-1">
                 <slot />
             </main>
 
